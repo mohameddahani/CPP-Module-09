@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 10:57:49 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 14:37:36 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 
 // ! Definitions of functions
 
-void parseFile(std::string fileName, std::map<std::string, std::string>&map){
+void printCalculation(std::string date, std::string value){
+    std::cout << date << " " << value << std::endl;
+}
+
+void parseFile(std::string fileName, std::multimap<std::string, std::string>&map){
     // * Open the file
     std::ifstream inputFile(fileName.c_str());
     if (!inputFile.is_open()){
@@ -23,6 +27,9 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
     
     // * Read from the file
     std::string line;
+
+    std::multimap<std::string, std::string>::iterator it = map.begin();
+    
     bool firstLine = true;
     while (std::getline(inputFile, line)){
         // * skip the line if empty
@@ -60,6 +67,8 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
             if (line != "date | value"){
                 throw std::runtime_error("Header is not valid (date | value)");
             }
+            firstLine = false;
+            continue;
         }
 
 
@@ -74,6 +83,7 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
             unsigned int plusSign = 0;
             unsigned int pipe = 0;
             unsigned int space = 0;
+
             for (size_t i = 0; line[i]; i++){
                 if (line[i] == '-'){
                     minusSign++;
@@ -104,13 +114,18 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
             char *token = strtok(str, "-");
 
             unsigned int order = 0;
+            // * flag of error
+            bool error = false;
+
             while (token != NULL){
                 char *endOfstrtod;
                 // * get year
                 if (order == 0){
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || std::strlen(token) != 4 || num < 2009){
-                        throw std::runtime_error("year is incorrect!");
+                        std::cerr << token << " Error: year is incorrect!" << std::endl;
+                        error = true;
+                        break ;
                     }
 
                     date = token;
@@ -121,7 +136,9 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                 else if (order == 1){
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || std::strlen(token) != 2 || (num > 12 || num < 1)){
-                        throw std::runtime_error("month is incorrect!");
+                        std::cerr << token << " Error: month is incorrect!" << std::endl;
+                        error = true;
+                        break ;
                     }
 
                     date += "-";
@@ -134,7 +151,9 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                     token = strtok(token, " ");
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || std::strlen(token) != 2 || (num > 31 || num < 1)){
-                        throw std::runtime_error("day is incorrect!");
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
                     }
 
                     date += "-";
@@ -148,7 +167,9 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                     token = strtok(token, " ");
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || (num > 1000 || num < 0)){
-                        throw std::runtime_error("value is incorrect!");
+                        std::cerr << token << " Error: value is incorrect!" << std::endl;
+                        error = true;
+                        break ;
                     }
 
                     value = token;
@@ -156,18 +177,22 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                     // std::cout << "value is:" << num << std::endl;
                 }
                 
+                error = false;
 
                 token = strtok(NULL, "-");
-
+                
                 order++;
             }
             
             // * Store data after parsing
-            map[date] = value;
+            if (!error){
+                map.insert(std::make_pair(date, value));
+                ++it;
+                if (it != map.end()){
+                    printCalculation(it->first, it->second);
+                }
+            }
+            
         }
-        
-
-
-        firstLine = false;
     }
 }
