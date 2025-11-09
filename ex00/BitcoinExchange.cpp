@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 17:10:50 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 18:37:01 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 // ! Definitions of functions
 
 void printCalculation(std::string date, std::string value){
+    // * Open Data Base file
     std::ifstream dataBase("./data.csv");
     if (!dataBase.is_open()){
         throw std::runtime_error("File of database is not open!");
     }
 
+    // * Check if date is in database
     std::string line;
     bool dateIsFound = false;
     while (std::getline(dataBase, line)){
@@ -46,6 +48,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
     // * Read from the file
     std::string line;
 
+    // * i use multimap because can i douplicate the key
     std::multimap<std::string, std::string>::iterator it = map.begin();
     
     bool firstLine = true;
@@ -56,7 +59,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
         }
         
         // * Skip white spaces from front of line
-
         unsigned int i = 0;
         while (line[i] <= 32 && line[i] > 0){
             i++;
@@ -131,16 +133,23 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             std::string date;
             std::string value;
             
+            // * change line from read only to read and write
             char str[line.length() + 1];
-            // * change line from read only to read and write 
             std::strcpy(str, line.c_str());
             
+            // * split the line
             char *token = strtok(str, "-");
 
+            // * this flag check order of line (Y-M-D | V)
             unsigned int order = 0;
+
             // * flag of error
             bool error = false;
 
+            // * check if date more than 2022
+            bool isMoreThan2022 = false;
+
+            // * split the line
             while (token != NULL){
                 char *endOfstrtod;
                 // * get year
@@ -151,8 +160,13 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                         error = true;
                         break ;
                     }
-
-                    date = token;
+                    // * check if year more than 2022
+                    if (num > 2022){
+                        isMoreThan2022 = true;
+                        date = "2022";
+                    } else {
+                        date = token;
+                    }
                 }
                 // * get month
                 else if (order == 1){
@@ -163,8 +177,14 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                         break ;
                     }
 
+                    // * check if year more than 2022
+                    // todo: i need to check if the month more than 3 in 2022
                     date += "-";
-                    date += token;
+                    if (isMoreThan2022){
+                        date += "03";                        
+                    } else {
+                        date += token;
+                    }
 
                 }
                 // * get day
@@ -177,8 +197,14 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                         break ;
                     }
 
+                    // * check if year more than 2022
+                    // todo: i need to check if the day more than 29 in month 3 in 2022
                     date += "-";
-                    date += token;
+                    if (isMoreThan2022){
+                        date += "29";                        
+                    } else {
+                        date += token;
+                    }
                 }
                 // * get value
                 else if (order == 3){
