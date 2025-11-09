@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 18:37:01 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 18:45:29 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void printCalculation(std::string date, std::string value){
         std::cerr << "Error: Date not found => " << date << std::endl;
     }
     
+    // * Close file
+    dataBase.close();
 }
 
 void parseFile(std::string fileName, std::multimap<std::string, std::string>&map){
@@ -241,4 +243,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             }
         }
     }
+
+    // * Close file
+    inputFile.close();
 }
