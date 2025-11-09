@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 14:37:36 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 17:10:50 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,32 @@
 // ! Definitions of functions
 
 void printCalculation(std::string date, std::string value){
-    std::cout << date << " " << value << std::endl;
+    std::ifstream dataBase("./data.csv");
+    if (!dataBase.is_open()){
+        throw std::runtime_error("File of database is not open!");
+    }
+
+    std::string line;
+    bool dateIsFound = false;
+    while (std::getline(dataBase, line)){
+        std::string dataBaseDate = line.substr(0, 10);
+        if (dataBaseDate == date){
+            dateIsFound = true;
+            std::string dataBasePrice = line.substr(11, line.length());
+            std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
+        }
+    }
+    if (!dateIsFound){
+        std::cerr << "Error: Date not found => " << date << std::endl;
+    }
+    
 }
 
 void parseFile(std::string fileName, std::multimap<std::string, std::string>&map){
     // * Open the file
     std::ifstream inputFile(fileName.c_str());
     if (!inputFile.is_open()){
-        throw std::runtime_error("File is not open!");
+        throw std::runtime_error("File of tests is not open!");
     }
     
     // * Read from the file
@@ -38,6 +56,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
         }
         
         // * Skip white spaces from front of line
+
         unsigned int i = 0;
         while (line[i] <= 32 && line[i] > 0){
             i++;
@@ -46,7 +65,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
         // * Skip white spaces from back of line
         unsigned int size = line.length();
         unsigned int end = 0;
-        while (line[size - 1] <= 32 && line[size - 1] > 0){
+        while (size > 0 && line[size - 1] <= 32 && line[size - 1] > 0){
             size--;
             end++;
         }
@@ -56,14 +75,16 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             line.erase(0, i);
         }
 
+
+
         // * remove spaces in back
-        if (end != 0){
+        if (end != 0 && !line.empty()){
             line.erase(line.length() - end, line.length());
         }
         
-        
         // * check the first line has (date | value)
-        if (firstLine){        
+        if (firstLine){
+
             if (line != "date | value"){
                 throw std::runtime_error("Header is not valid (date | value)");
             }
@@ -72,9 +93,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
         }
 
 
-        // std::cout << "=====line=====" << std::endl;
-        // std::cout << line << std::endl;
-        
 
         // * get Dates and Values
         if (!firstLine){
@@ -100,7 +118,13 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             }
 
             if (minusSign != 2 || pipe != 1 || space != 2 || plusSign){
-                throw std::runtime_error("The Fomat is not valid");
+                if (minusSign > 2){
+                    std::cerr << "Error: not a positive number => " << line << std::endl;
+                }
+                else {
+                    std::cerr << "Error: bad input => " << line << std::endl;
+                }
+                continue;
             }
             
             
@@ -129,8 +153,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     }
 
                     date = token;
-
-                    // std::cout << "year is:" << num << std::endl;
                 }
                 // * get month
                 else if (order == 1){
@@ -144,7 +166,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     date += "-";
                     date += token;
 
-                    // std::cout << "month is:" << num << std::endl;
                 }
                 // * get day
                 else if (order == 2){
@@ -158,8 +179,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
 
                     date += "-";
                     date += token;
-
-                    // std::cout << "day is:" << num << std::endl;
                 }
                 // * get value
                 else if (order == 3){
@@ -167,14 +186,16 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     token = strtok(token, " ");
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || (num > 1000 || num < 0)){
-                        std::cerr << token << " Error: value is incorrect!" << std::endl;
+                        if (num > 1000){
+                            std::cerr << token << " Error: too large a number." << std::endl;
+                        }else {
+                            std::cerr << token << " Error: value is incorrect!" << std::endl;
+                        }
                         error = true;
                         break ;
                     }
 
                     value = token;
-
-                    // std::cout << "value is:" << num << std::endl;
                 }
                 
                 error = false;
@@ -192,7 +213,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     printCalculation(it->first, it->second);
                 }
             }
-            
         }
     }
 }
