@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/08 21:09:23 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 10:28:09 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 
 // ! Definitions of functions
 
-bool parseFile(std::string fileName){
+void parseFile(std::string fileName){
     // * Open the file
     std::ifstream inputFile(fileName.c_str());
     if (!inputFile.is_open()){
-        std::cerr << "File is not open!" << std::endl;
-        return false;
+        throw std::runtime_error("File is not open!");
     }
 
     // * Create a Map to store data
@@ -27,7 +26,7 @@ bool parseFile(std::string fileName){
     
     // * Read from the file
     std::string line;
-    unsigned int i = 0;
+    bool firstLine = true;
     while (std::getline(inputFile, line)){
         // * skip the line if empty
         if (line.empty()){
@@ -35,9 +34,9 @@ bool parseFile(std::string fileName){
         }
         
         // * Skip white spaces from front of line
-        unsigned int j = 0;
-        while (line[j] <= 32 && line[j] > 0){
-            j++;
+        unsigned int i = 0;
+        while (line[i] <= 32 && line[i] > 0){
+            i++;
         }
         
         // * Skip white spaces from back of line
@@ -48,27 +47,118 @@ bool parseFile(std::string fileName){
             end++;
         }
 
-        if (j != 0){
-            line.erase(0, j);
+        // * remove spaces in front
+        if (i != 0){
+            line.erase(0, i);
         }
 
+        // * remove spaces in back
         if (end != 0){
             line.erase(line.length() - end, line.length());
         }
         
         
-        std::cout << "line after skip spaces: " << line << std::endl;
-        
         // * check the first line has (date | value)
-        if (i == 0){        
+        if (firstLine){        
             if (line != "date | value"){
-                return false;
+                throw std::runtime_error("Header is not (date | value)");
+            }
+        }
+
+
+        std::cout << "=====line=====" << std::endl;
+        std::cout << line << std::endl;
+        
+
+        // * get Dates and Values
+        if (!firstLine){
+            // * check format of dates and values is valid
+            unsigned int minusSign = 0;
+            unsigned int plusSign = 0;
+            unsigned int pipe = 0;
+            unsigned int space = 0;
+            for (size_t i = 0; line[i]; i++){
+                if (line[i] == '-'){
+                    minusSign++;
+                }
+                if (line[i] == '|'){
+                    pipe++;
+                }
+                if (line[i] == ' '){
+                    space++;
+                }
+                if (line[i] == '+'){
+                    plusSign++;
+                }
+            }
+
+            if (minusSign != 2 || pipe != 1 || space != 2 || plusSign){
+                throw std::runtime_error("The Fomat is not valid");
+            }
+            
+            
+            std::string year;
+            std::string month;
+            std::string day;
+            
+            char str[line.length() + 1];
+            // * change line from read only to read and write 
+            std::strcpy(str, line.c_str());
+            
+            char *token = strtok(str, "-");
+
+            unsigned int order = 0;
+            while (token != NULL){
+                char *endOfstrtod;
+                // * get year
+                if (order == 0){
+                    double num = strtod(token, &endOfstrtod);
+                    if (*endOfstrtod != '\0' || std::strlen(token) != 4 || num < 2009){
+                        throw std::runtime_error("year is incorrect!");
+                    }
+
+                    std::cout << "year is: " << num << std::endl;
+                }
+                // * get month
+                else if (order == 1){
+                    double num = strtod(token, &endOfstrtod);
+                    if (*endOfstrtod != '\0' || std::strlen(token) != 2 || (num > 12 || num < 1)){
+                        throw std::runtime_error("month is incorrect!");
+                    }
+
+                    std::cout << "month is: " << num << std::endl;
+                }
+                // * get day
+                else if (order == 2){
+                    token = strtok(token, " ");
+                    double num = strtod(token, &endOfstrtod);
+                    if (*endOfstrtod != '\0' || std::strlen(token) != 2 || (num > 31 || num < 1)){
+                        throw std::runtime_error("day is incorrect!");
+                    }
+
+                    std::cout << "day is: " << num << std::endl;
+                }
+                // * get value
+                else if (order == 3){
+                    token = strtok(token, "|");
+                    double num = strtod(token, &endOfstrtod);
+                    if (*endOfstrtod != '\0' || (num > 1000 || num < 0)){
+                        throw std::runtime_error("value is incorrect!");
+                    }
+
+                    std::cout << "value is: " << num << std::endl;
+                }
+                
+
+                token = strtok(NULL, "-");
+
+                order++;
             }
             
         }
-        i++;
-    }
+        
 
-    return true;
-    
+
+        firstLine = false;
+    }
 }
