@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:57:01 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 09:03:45 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 10:43:26 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@
 #include <map>
 
 // * Functions
-void parseFile(std::string fileName);
+void parseFile(std::string fileName, std::map<std::string, std::string>&map);
 
 #endif

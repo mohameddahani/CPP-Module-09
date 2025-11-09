@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 10:28:09 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/09 10:57:49 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 // ! Definitions of functions
 
-void parseFile(std::string fileName){
+void parseFile(std::string fileName, std::map<std::string, std::string>&map){
     // * Open the file
     std::ifstream inputFile(fileName.c_str());
     if (!inputFile.is_open()){
         throw std::runtime_error("File is not open!");
     }
-
-    // * Create a Map to store data
-    std::map<std::string, std::string>map;
     
     // * Read from the file
     std::string line;
@@ -61,13 +58,13 @@ void parseFile(std::string fileName){
         // * check the first line has (date | value)
         if (firstLine){        
             if (line != "date | value"){
-                throw std::runtime_error("Header is not (date | value)");
+                throw std::runtime_error("Header is not valid (date | value)");
             }
         }
 
 
-        std::cout << "=====line=====" << std::endl;
-        std::cout << line << std::endl;
+        // std::cout << "=====line=====" << std::endl;
+        // std::cout << line << std::endl;
         
 
         // * get Dates and Values
@@ -97,9 +94,8 @@ void parseFile(std::string fileName){
             }
             
             
-            std::string year;
-            std::string month;
-            std::string day;
+            std::string date;
+            std::string value;
             
             char str[line.length() + 1];
             // * change line from read only to read and write 
@@ -117,7 +113,9 @@ void parseFile(std::string fileName){
                         throw std::runtime_error("year is incorrect!");
                     }
 
-                    std::cout << "year is: " << num << std::endl;
+                    date = token;
+
+                    // std::cout << "year is:" << num << std::endl;
                 }
                 // * get month
                 else if (order == 1){
@@ -126,7 +124,10 @@ void parseFile(std::string fileName){
                         throw std::runtime_error("month is incorrect!");
                     }
 
-                    std::cout << "month is: " << num << std::endl;
+                    date += "-";
+                    date += token;
+
+                    // std::cout << "month is:" << num << std::endl;
                 }
                 // * get day
                 else if (order == 2){
@@ -136,17 +137,23 @@ void parseFile(std::string fileName){
                         throw std::runtime_error("day is incorrect!");
                     }
 
-                    std::cout << "day is: " << num << std::endl;
+                    date += "-";
+                    date += token;
+
+                    // std::cout << "day is:" << num << std::endl;
                 }
                 // * get value
                 else if (order == 3){
                     token = strtok(token, "|");
+                    token = strtok(token, " ");
                     double num = strtod(token, &endOfstrtod);
                     if (*endOfstrtod != '\0' || (num > 1000 || num < 0)){
                         throw std::runtime_error("value is incorrect!");
                     }
 
-                    std::cout << "value is: " << num << std::endl;
+                    value = token;
+
+                    // std::cout << "value is:" << num << std::endl;
                 }
                 
 
@@ -155,6 +162,8 @@ void parseFile(std::string fileName){
                 order++;
             }
             
+            // * Store data after parsing
+            map[date] = value;
         }
         
 
