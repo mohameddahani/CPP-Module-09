@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 10:23:33 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 12:29:53 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,39 @@ void printCalculation(std::string date, std::string value){
     std::string dateWithOnlytDay = date.substr(8, 2);
     
     // bool dateIsFound = false;
+    // TODO: set precesion 0.2
+    // * get date from database
     while (std::getline(dataBase, line)){
+        // * get only year and month
         std::string dataBaseYearAndMonth = line.substr(0, 8);
+        // * check if i found year and month
         if (dataBaseYearAndMonth == dateWithoutDay){
+            // * get the prev date
             std::string prevDataBaseDate;
+            // * check the range of this years and month like i want to get day exact
             while (std::getline(dataBase, line) && dataBaseYearAndMonth == dateWithoutDay){
                 std::string dataBaseDay = line.substr(8, 2);
+                // * check if i found the day
                 if (dateWithOnlytDay == dataBaseDay){
+                    std::cout << "line: " << line << std::endl;
+                    std::cout << "dateWithOnlytDay: " << dateWithOnlytDay << std::endl;
+                    std::cout << "dataBaseDay: " << dataBaseDay << std::endl;
                     std::string dataBasePrice = line.substr(11, line.length());
                     std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
+                    std::cout << "l9ito" << std::endl;
                     return ;
-                } 
-                
-                prevDataBaseDate = line;
-                std::string dataBaseYearAndMonth = line.substr(0, 8);
+                } else {
+                    // * if im not found the day then store it in prev date
+                    prevDataBaseDate = line;
+                    // * get only year and month
+                    std::string dataBaseYearAndMonth = line.substr(0, 8);
+                }
             }
+            // * if im not found date then i will print the prev date
+            std::cout << prevDataBaseDate << std::endl;
             std::string dataBasePrice = prevDataBaseDate.substr(11, line.length());
             std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
+            return;
         }
     }
     // if (!dateIsFound){
