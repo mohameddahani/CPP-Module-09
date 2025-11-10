@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 18:45:29 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 08:43:36 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             bool error = false;
 
             // * check if date more than 2022
-            bool isMoreThan2022 = false;
+            bool is2022orMore = false;
 
             // * split the line
             while (token != NULL){
@@ -163,8 +163,8 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                         break ;
                     }
                     // * check if year more than 2022
-                    if (num > 2022){
-                        isMoreThan2022 = true;
+                    if (num >= 2022){
+                        is2022orMore = true;
                         date = "2022";
                     } else {
                         date = token;
@@ -182,12 +182,11 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     // * check if year more than 2022
                     // todo: i need to check if the month more than 3 in 2022
                     date += "-";
-                    if (isMoreThan2022){
-                        date += "03";                        
+                    if (is2022orMore && num >= 3) {
+                        date += "03";
                     } else {
                         date += token;
                     }
-
                 }
                 // * get day
                 else if (order == 2){
@@ -202,7 +201,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                     // * check if year more than 2022
                     // todo: i need to check if the day more than 29 in month 3 in 2022
                     date += "-";
-                    if (isMoreThan2022){
+                    if (is2022orMore && num >= 29){
                         date += "29";                        
                     } else {
                         date += token;
