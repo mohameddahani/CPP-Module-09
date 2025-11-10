@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 15:22:52 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 15:25:20 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             line.erase(0, i);
         }
 
-
-
         // * remove spaces in back
         if (end != 0 && !line.empty()){
             line.erase(line.length() - end, line.length());
@@ -131,8 +129,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             firstLine = false;
             continue;
         }
-
-
 
         // * get Dates and Values
         if (!firstLine){
@@ -166,7 +162,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                 }
                 continue;
             }
-            
             
             std::string date;
             std::string value;

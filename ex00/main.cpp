@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:03 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/09 14:02:02 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 15:24:44 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,6 @@ int main(int ac, char **av){
 
         // * Parse the file
         parseFile(av[1], map);
-
-        // std::cout << "==========print the map==========" << std::endl;
-        // std::multimap<std::string, std::string>::iterator it;
-        // for ( it = map.begin(); it != map.end(); ++it){
-        //     std::cout << it->first << " " << it->second << std::endl;
-        // }
-        
     } catch (const std::exception &e){
         std::cerr << e.what() << std::endl;
         return 1;
