@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 08:43:36 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 10:23:33 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 // ! Definitions of functions
 
 void printCalculation(std::string date, std::string value){
+    (void)value;
     // * Open Data Base file
     std::ifstream dataBase("./data.csv");
     if (!dataBase.is_open()){
@@ -23,18 +24,32 @@ void printCalculation(std::string date, std::string value){
 
     // * Check if date is in database
     std::string line;
-    bool dateIsFound = false;
+    std::string dateWithoutDay = date.substr(0, 8);
+    std::string dateWithOnlytDay = date.substr(8, 2);
+    
+    // bool dateIsFound = false;
     while (std::getline(dataBase, line)){
-        std::string dataBaseDate = line.substr(0, 10);
-        if (dataBaseDate == date){
-            dateIsFound = true;
-            std::string dataBasePrice = line.substr(11, line.length());
+        std::string dataBaseYearAndMonth = line.substr(0, 8);
+        if (dataBaseYearAndMonth == dateWithoutDay){
+            std::string prevDataBaseDate;
+            while (std::getline(dataBase, line) && dataBaseYearAndMonth == dateWithoutDay){
+                std::string dataBaseDay = line.substr(8, 2);
+                if (dateWithOnlytDay == dataBaseDay){
+                    std::string dataBasePrice = line.substr(11, line.length());
+                    std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
+                    return ;
+                } 
+                
+                prevDataBaseDate = line;
+                std::string dataBaseYearAndMonth = line.substr(0, 8);
+            }
+            std::string dataBasePrice = prevDataBaseDate.substr(11, line.length());
             std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
         }
     }
-    if (!dateIsFound){
-        std::cerr << "Error: Date not found => " << date << std::endl;
-    }
+    // if (!dateIsFound){
+    //     std::cerr << "Error: Date not found => " << date << std::endl;
+    // }
     
     // * Close file
     dataBase.close();
@@ -198,8 +213,34 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                         break ;
                     }
 
+                    // * check max days in every month
+                    std::string getMonth = date.substr(5, 6);
+                    if (getMonth == "02" && num > 28){
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
+                    } else if (getMonth == "04" && num > 30){
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
+
+                    } else if (getMonth == "06" && num > 30){
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
+
+                    } else if (getMonth == "09" && num > 30){
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
+
+                    } else if (getMonth == "11" && num > 30){
+                        std::cerr << token << " Error: day is incorrect!" << std::endl;
+                        error = true;
+                        break ;
+                    }
+                    
                     // * check if year more than 2022
-                    // todo: i need to check if the day more than 29 in month 3 in 2022
                     date += "-";
                     if (is2022orMore && num >= 29){
                         date += "29";                        
