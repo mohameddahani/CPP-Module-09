@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:03 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 15:24:44 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 20:03:42 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,16 @@ int main(int ac, char **av){
 
     try {
         // * Create a Map to store data
-        std::multimap<std::string, std::string>map;
+        std::map<std::string, std::string>map;
+
+        // * Store the data base
+        getDataFomDataBase(map); 
+
+        
+        // std::map<std::string, std::string>::iterator it = map.begin();
+        // for (; it != map.end(); ++it){
+        //     std::cout << it->first << " " << it->second << std::endl;
+        // }
 
         // * Parse the file
         parseFile(av[1], map);

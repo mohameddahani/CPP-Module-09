@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 15:36:16 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 21:00:50 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,70 +14,104 @@
 
 // ! Definitions of functions
 
-void printCalculation(std::string date, std::string value, std::ifstream &inputFile){
+void getDataFomDataBase(std::map<std::string, std::string>&map){
     // * Open Data Base file
     std::ifstream dataBase("./data.csv");
     if (!dataBase.is_open()){
-        inputFile.close();
         throw std::runtime_error("File of database is not open!");
     }
 
-    // * Check if date is in database
+    // * Store all data in map
     std::string line;
+
+    // * skip the fisrt line
+    bool fisrtLine = true;
+
     // * get day from date that we search
-    std::string dateWithoutDay = date.substr(0, 8);
-    // * get day from data base
-    std::string dateWithOnlytDay = date.substr(8, 2);
-    
-    // * get the prev date from data base
-    std::string prevDataBaseDate;
-    // * get date from database
     while (std::getline(dataBase, line)){
+        // * skip the fisrt line
+        if (fisrtLine){
+            fisrtLine = false;
+            continue;
+        }
+        
         // * if line is empty skip it
         if (line.empty()){
             continue;
         }
-         
-        // * get only year and month from data base
-        std::string dataBaseYearAndMonth = line.substr(0, 8);
-        // * check if i found year and month
-        if (dataBaseYearAndMonth == dateWithoutDay){
-            // * get day of year and month from data base
-            std::string dataBaseDay = line.substr(8, 2);
-            // * check if i found the day
-            if (dateWithOnlytDay == dataBaseDay){
-                std::string dataBasePrice = line.substr(11, line.length());
-                std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
-                
-                // * Close file
-                dataBase.close();
 
-                return;
-            } else {
-                // * check if we are in the close day that we need
-                if (std::strtod(dataBaseDay.c_str(), NULL) > std::strtod(dateWithOnlytDay.c_str(), NULL)){
-                    break;
-                }
-                // * if im not found the day then store it in prev date
-                prevDataBaseDate = line;
-                continue;
-            }
-        }
+        // * get Date
+        std::string dateOfDataBase = line.substr(0, 10);
+        // * get Price
+        std::string priceOfDataBase = line.substr(11, line.length());
+
+        map[dateOfDataBase] = priceOfDataBase;
     }
-    
-    // * if im not found date then i will print the prev date
-    if (!prevDataBaseDate.empty()){
-        std::string dataBasePrice = prevDataBaseDate.substr(11, line.length());
-        std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(dataBasePrice.c_str(), NULL) << std::endl;
-    } else {
-        std::cerr << "Error: Date not found => " << date << std::endl;
-    }
-    
-    // * Close file
+
+    // * Close the file
     dataBase.close();
 }
 
-void parseFile(std::string fileName, std::multimap<std::string, std::string>&map){
+void printCalculation(std::string &date, std::string &value, std::map<std::string, std::string>&map){
+    // * use lower bound to get value that i search if not found it he will get me the next date
+    std::map<std::string, std::string>::iterator it = map.lower_bound(date);
+
+    if (it->first == date){
+        std::cout << it->first << std::endl;
+        return;
+    }
+    --it;
+    std::cout << it->first << std::endl;
+
+
+
+
+
+
+
+
+
+
+    
+    // std::map<std::string, std::string>::iterator it = map.begin();
+    
+    // // * get the prev date from data base
+    // std::string prevDataBaseDate;
+    // // * get date from database
+    // for (; it != map.end(); ++it){
+    //     // * check if i found year and month
+    //         // * check if i found the day
+    //         if (date == it->first){
+    //             std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl;
+
+    //             return;
+    //         } else {
+    //             // * get day of year and month from data base
+    //             std::string dataBaseDay = it->first.substr(8, 2);
+
+    //             // * get day from data base
+    //             std::string dateWithOnlytDay = date.substr(8, 2);
+                
+    //             // * check if we are in the close day that we need
+    //             if (std::strtod(dataBaseDay.c_str(), NULL) > std::strtod(dateWithOnlytDay.c_str(), NULL)){
+    //                 break;
+    //             }
+    //             // * if im not found the day then store it in prev date
+    //             prevDataBaseDate = it->first;
+    //             continue;
+    //         }
+    // }
+    
+    // // * if im not found date then i will print the prev date
+    // if (!prevDataBaseDate.empty()){
+    //     std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl;
+    // } else {
+    //     std::cerr << "Error: Date not found => " << date << std::endl;
+    // }
+    
+}
+
+void parseFile(std::string fileName, std::map<std::string, std::string>&map){
     // * Open the file
     std::ifstream inputFile(fileName.c_str());
     if (!inputFile.is_open()){
@@ -86,9 +120,6 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
     
     // * Read from the file
     std::string line;
-
-    // * i use multimap because can i douplicate the key
-    std::multimap<std::string, std::string>::iterator it = map.begin();
     
     bool firstLine = true;
     while (std::getline(inputFile, line)){
@@ -293,11 +324,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
             
             // * Store data after parsing
             if (!error){
-                map.insert(std::make_pair(date, value));
-                ++it;
-                if (it != map.end()){
-                    printCalculation(it->first, it->second, inputFile);
-                }
+                printCalculation(date, value, map);
             }
         }
     }
