@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 15:25:20 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 15:36:16 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 // ! Definitions of functions
 
-void printCalculation(std::string date, std::string value){
+void printCalculation(std::string date, std::string value, std::ifstream &inputFile){
     // * Open Data Base file
     std::ifstream dataBase("./data.csv");
     if (!dataBase.is_open()){
+        inputFile.close();
         throw std::runtime_error("File of database is not open!");
     }
 
@@ -124,6 +125,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
         if (firstLine){
 
             if (line != "date | value"){
+                inputFile.close();
                 throw std::runtime_error("Header is not valid (date | value)");
             }
             firstLine = false;
@@ -294,7 +296,7 @@ void parseFile(std::string fileName, std::multimap<std::string, std::string>&map
                 map.insert(std::make_pair(date, value));
                 ++it;
                 if (it != map.end()){
-                    printCalculation(it->first, it->second);
+                    printCalculation(it->first, it->second, inputFile);
                 }
             }
         }

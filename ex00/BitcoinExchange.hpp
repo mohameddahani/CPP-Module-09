@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:57:01 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 15:22:44 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/10 15:36:29 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@
 
 // * Functions
 void parseFile(std::string fileName, std::multimap<std::string, std::string>&map);
-void printCalculation(std::string date, std::string value);
+void printCalculation(std::string date, std::string value, std::ifstream &inputFile);
 
 #endif
