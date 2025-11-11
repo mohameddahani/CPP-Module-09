@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/10 21:00:50 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/11 08:23:03 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,62 +53,17 @@ void getDataFomDataBase(std::map<std::string, std::string>&map){
 }
 
 void printCalculation(std::string &date, std::string &value, std::map<std::string, std::string>&map){
-    // * use lower bound to get value that i search if not found it he will get me the next date
+    // * use lower bound to get value that i search, if not found it he will get me the next one
     std::map<std::string, std::string>::iterator it = map.lower_bound(date);
 
     if (it->first == date){
-        std::cout << it->first << std::endl;
+        std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl;
         return;
     }
+    
+    // * if im not found it and it is not on the end() so i will get the close one
     --it;
-    std::cout << it->first << std::endl;
-
-
-
-
-
-
-
-
-
-
-    
-    // std::map<std::string, std::string>::iterator it = map.begin();
-    
-    // // * get the prev date from data base
-    // std::string prevDataBaseDate;
-    // // * get date from database
-    // for (; it != map.end(); ++it){
-    //     // * check if i found year and month
-    //         // * check if i found the day
-    //         if (date == it->first){
-    //             std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl;
-
-    //             return;
-    //         } else {
-    //             // * get day of year and month from data base
-    //             std::string dataBaseDay = it->first.substr(8, 2);
-
-    //             // * get day from data base
-    //             std::string dateWithOnlytDay = date.substr(8, 2);
-                
-    //             // * check if we are in the close day that we need
-    //             if (std::strtod(dataBaseDay.c_str(), NULL) > std::strtod(dateWithOnlytDay.c_str(), NULL)){
-    //                 break;
-    //             }
-    //             // * if im not found the day then store it in prev date
-    //             prevDataBaseDate = it->first;
-    //             continue;
-    //         }
-    // }
-    
-    // // * if im not found date then i will print the prev date
-    // if (!prevDataBaseDate.empty()){
-    //     std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl;
-    // } else {
-    //     std::cerr << "Error: Date not found => " << date << std::endl;
-    // }
-    
+    std::cout << date << " => " << value << " = " << std::strtod(value.c_str(), NULL) * std::strtod(it->second.c_str(), NULL) << std::endl; 
 }
 
 void parseFile(std::string fileName, std::map<std::string, std::string>&map){
@@ -121,7 +76,9 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
     // * Read from the file
     std::string line;
     
+    // * Skip the first line
     bool firstLine = true;
+    
     while (std::getline(inputFile, line)){
         // * skip the line if empty
         if (line.empty()){
@@ -322,7 +279,7 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                 order++;
             }
             
-            // * Store data after parsing
+            // * print data after parsing
             if (!error){
                 printCalculation(date, value, map);
             }
