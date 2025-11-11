@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 08:29:43 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/11 08:59:03 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:37:25 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int main(int ac, char **av){
         return 1;
     }
 
-    // * Parse the RPN
-    if (!rpnParsing(av[1])){
-        std::cerr << "Error: RPN not valid!" << std::endl;
+    // * Parse and calculate the RPN
+    try {
+        rpnParsing(av[1]);        
+    } catch(const std::exception &e){
+        std::cerr << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }
