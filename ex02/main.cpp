@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:26:05 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/12 08:30:26 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/12 09:05:03 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int main(int ac, char **av){
     }
 
     try {
-        
+        mergeInsertionSort(ac, av);
     } catch(const std::exception &e){
         std::cout << e.what() << std::endl;
         return 1;
