@@ -6,11 +6,24 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/12 18:36:32 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/13 10:35:36 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
+static double getTimeByUs(){
+    // ? timespec this is like a `struct timeval' but has nanoseconds not microseconds
+    // ? is used to store time
+    struct timespec time;
+
+    // ? this func get time by clock id like (CLOCK_REALTIME) this will get time from 01/01/1970
+    // ? and he will store it in sturct timespec
+    clock_gettime(CLOCK_REALTIME, &time);
+
+    // ? now we convert the seconds to microseconds and add the rest of nanoseconds
+    return (time.tv_sec * 1e6) + (time.tv_nsec / 1e3);
+}
 
 void mergeInsertionSort(int ac, char **av){
     // ? PARSING
@@ -79,6 +92,8 @@ void mergeInsertionSort(int ac, char **av){
     }
 
     // ? ALGORITHM
+
+    double startTime = getTimeByUs();
 
     // * check if we have a even or odd vector and deque
     bool isEven = true;
@@ -150,19 +165,21 @@ void mergeInsertionSort(int ac, char **av){
         dequeMainChain.insert(itDequeInsert, dequeSecondChain[i]);
     }
     
+    double endTime = getTimeByUs();
+    std::cout << std::fixed << std::setprecision(5) << "Time to process a range of " << vector.size() << " elements with std::[vector] : " << endTime - startTime << "µs" << std::endl;
     
 
-    // * print all things in main vector
-    std::vector<long>::iterator vectorMtMainchain = vectorMainChain.begin();
-    for(; vectorMtMainchain != vectorMainChain.end(); ++vectorMtMainchain){
-        std::cout << *vectorMtMainchain << std::endl;
-    }
+    // // * print all things in main vector
+    // std::vector<long>::iterator vectorMtMainchain = vectorMainChain.begin();
+    // for(; vectorMtMainchain != vectorMainChain.end(); ++vectorMtMainchain){
+    //     std::cout << *vectorMtMainchain << std::endl;
+    // }
     
-    std::cout << "=======================" << std::endl;
+    // std::cout << "=======================" << std::endl;
     
-    // * print all things in main deque
-    std::deque<long>::iterator dequeMtMainchain = dequeMainChain.begin();
-    for(; dequeMtMainchain != dequeMainChain.end(); ++dequeMtMainchain){
-        std::cout << *dequeMtMainchain << std::endl;
-    }
+    // // * print all things in main deque
+    // std::deque<long>::iterator dequeMtMainchain = dequeMainChain.begin();
+    // for(; dequeMtMainchain != dequeMainChain.end(); ++dequeMtMainchain){
+    //     std::cout << *dequeMtMainchain << std::endl;
+    // }
 }
