@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/16 10:40:15 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/16 18:43:09 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,41 +25,64 @@ bool comparison(long a, long b){
 
 
 
-static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs){
-    // * vector
-    // 10 9 8 7 6 5 4 3 2 1 0
-    // [9 10] [7 8] [5 6] [3 4] [1 2] 0
-    // [a1 b1] [a2 b2] [a3 b3] [a4 b4] [a5 b5] a6
-
-    // [(7 8) (9 10)] [(3 4) (5 6)] 1 2 0
-    // [(3 4 5 6) (7 8 9 10)] 1 2 0
-    // 3 4 5 6 7 8 9 10 1 2 0
-
-    for (size_t i = 0; i + sizeOfPairs <= vector.size(); i += sizeOfPairs)
-    {
-        // * index comparison in every recusion
-        // ! 0-1 | 2-3 ... (index comparison in every recusion)
-        // ! 1-3 | 5-7 ... (index comparison in every recusion)
-        // ! 3-7 | 11-15 ... (index comparison in every recusion)
-        size_t a = i + (sizeOfPairs / 2) - 1;
-        size_t b = i + sizeOfPairs - 1;
-
-        std::vector<long>::iterator startOfBlock = vector.begin() + i;
-        std::vector<long>::iterator endOfBlock = vector.begin() + i + sizeOfPairs / 2;
-        std::vector<long>::iterator startOfSecondBlock =  vector.begin() + i + sizeOfPairs / 2;
-
-        if (comparison(vector[a], vector[b])) {
-            std::swap_ranges(startOfBlock, endOfBlock, startOfSecondBlock);
-        }
-    }
+static void mergeMainAndPendChains(std::vector<long>&mainChain, std::vector<long>&pendChain){
     
-    // * condition of stop recusion that's mean when we division into pairs and we has only 1 pairs then we need to stop
-    if (vector.size() / sizeOfPairs == 1){
-        return;
-    }
+}
 
-    // * recall the function
-    divisionIntoPairsAndSorting(vector, sizeOfPairs * 2);
+
+
+static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs,
+    std::vector<long>&mainChain, std::vector<long>&pendChain){
+        // * vector
+        // 10 9 8 7 6 5 4 3 2 1 0
+        // [9 10] [7 8] [5 6] [3 4] [1 2] 0
+        // [a1 b1] [a2 b2] [a3 b3] [a4 b4] [a5 b5] a6
+
+        // [(7 8) (9 10)] [(3 4) (5 6)] 1 2 0
+        // [(3 4 5 6) (7 8 9 10)] 1 2 0
+        // 3 4 5 6 7 8 9 10           1 2 0
+        //        main                 pend
+
+        for (size_t i = 0; i + sizeOfPairs <= vector.size(); i += sizeOfPairs)
+        {
+            // * index comparison in every recusion
+            // ! 0-1 | 2-3 ... (index comparison in every recusion)
+            // ! 1-3 | 5-7 ... (index comparison in every recusion)
+            // ! 3-7 | 11-15 ... (index comparison in every recusion)
+            size_t a = i + (sizeOfPairs / 2) - 1;
+            size_t b = i + sizeOfPairs - 1;
+
+            // * calculate the start of range and end and start Of second range 
+            std::vector<long>::iterator startOfBlock = vector.begin() + i;
+            std::vector<long>::iterator endOfBlock = vector.begin() + i + sizeOfPairs / 2;
+            std::vector<long>::iterator startOfSecondBlock =  vector.begin() + i + sizeOfPairs / 2;
+
+            if (comparison(vector[a], vector[b])) {
+                std::swap_ranges(startOfBlock, endOfBlock, startOfSecondBlock);
+            }
+        }
+        
+        // * condition of stop recusion that's mean when we division into pairs and we has only 1 pairs then we need to stop
+        if (vector.size() / sizeOfPairs == 1){
+            // * store the element in main and pend chain
+            // * main
+            std::vector<long>::iterator itBeginMain = vector.begin();
+            std::vector<long>::iterator itEndMain = vector.begin() + sizeOfPairs;
+            for (; itBeginMain != itEndMain; ++itBeginMain){
+                mainChain.push_back(*itBeginMain);
+            }
+
+            // * pend
+            std::vector<long>::iterator itBeginPend = itEndMain; // * end of main chain is also start of pend
+            for (; itBeginPend != vector.end(); ++itBeginPend){
+                pendChain.push_back(*itBeginPend);
+            }
+            
+            return;
+        }
+
+        // * recall the function
+        divisionIntoPairsAndSorting(vector, sizeOfPairs * 2, mainChain, pendChain);
 }
 
 static double getTimeByUs(){
@@ -156,7 +179,12 @@ void mergeInsertionSort(int ac, char **av){
     std::cout << std::endl;
 
     // todo: Step 1: the division into the pairs & sorting
-    divisionIntoPairsAndSorting(vector, 2);
+    // * Main chain vector
+    std::vector<long>mainChain;
+    // * Pend chain vector
+    std::vector<long>pendChain;
+
+    divisionIntoPairsAndSorting(vector, 2, mainChain, pendChain);
 
     // * print the vector after every step
     std::vector<long>::iterator it = vector.begin();
@@ -166,6 +194,29 @@ void mergeInsertionSort(int ac, char **av){
     
     std::cout << std::endl;
     
+    // * print the vector of main chain
+    std::cout << "main: " << std::endl;
+    std::vector<long>::iterator itMainChain = mainChain.begin();
+    for (; itMainChain != mainChain.end(); ++itMainChain){
+        std::cout << *itMainChain << " ";
+    }
+    
+    std::cout << std::endl;
+
+    // * print the vector of pend chain
+    std::cout << "pend: " << std::endl;
+    std::vector<long>::iterator itPendChain = pendChain.begin();
+    for (; itPendChain != pendChain.end(); ++itPendChain){
+        std::cout << *itPendChain << " ";
+    }
+    
+    std::cout << std::endl;
+
+    // * merge the main and pend chains together
+    mergeMainAndPendChains(mainChain, pendChain);
+    
+    // * print the compairs numbers
+    std::cout << "Comparisons: " << comparisons << std::endl;
 
     // // * check if we have a even or odd vector and deque if is odd we need to store the last element in variable and the remove it to be contaier even
     // bool isEven = true;
