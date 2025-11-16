@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/15 21:10:27 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/16 10:40:15 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,39 +31,27 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
     // [9 10] [7 8] [5 6] [3 4] [1 2] 0
     // [a1 b1] [a2 b2] [a3 b3] [a4 b4] [a5 b5] a6
 
-    // ! 0-1 | 2-3 (index comparison in every recusion)
-    // ! 1-3 | 5-7 (index comparison in every recusion)
-    // ! 3-7 | 11-15 (index comparison in every recusion)
-
     // [(7 8) (9 10)] [(3 4) (5 6)] 1 2 0
     // [(3 4 5 6) (7 8 9 10)] 1 2 0
-    // 3 4 5 6 7 8 9 10             1 2 0
+    // 3 4 5 6 7 8 9 10 1 2 0
 
+    for (size_t i = 0; i + sizeOfPairs <= vector.size(); i += sizeOfPairs)
+    {
+        // * index comparison in every recusion
+        // ! 0-1 | 2-3 ... (index comparison in every recusion)
+        // ! 1-3 | 5-7 ... (index comparison in every recusion)
+        // ! 3-7 | 11-15 ... (index comparison in every recusion)
+        size_t a = i + (sizeOfPairs / 2) - 1;
+        size_t b = i + sizeOfPairs - 1;
 
-    
-                        // 0 + 1 < 11
+        std::vector<long>::iterator startOfBlock = vector.begin() + i;
+        std::vector<long>::iterator endOfBlock = vector.begin() + i + sizeOfPairs / 2;
+        std::vector<long>::iterator startOfSecondBlock =  vector.begin() + i + sizeOfPairs / 2;
 
-    // ! Need to swap raaaaaange
-    for (size_t i = 0; i + sizeOfPairs / 2 < vector.size(); i+= sizeOfPairs){
-        size_t a = i;
-        size_t b = sizeOfPairs / 2;
-
-        if (comparison(vector[a], vector[b])){
-            std::swap(vector[a], vector[b]);
+        if (comparison(vector[a], vector[b])) {
+            std::swap_ranges(startOfBlock, endOfBlock, startOfSecondBlock);
         }
-        std::cout << i + sizeOfPairs / 2 << std::endl;
-
-
-        std::vector<long>::iterator it = vector.begin();
-        std::cout << "=============================\n";
-        for (; it != vector.end(); ++it){
-            std::cout << *it << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "=============================\n";
-        
     }
-    
     
     // * condition of stop recusion that's mean when we division into pairs and we has only 1 pairs then we need to stop
     if (vector.size() / sizeOfPairs == 1){
@@ -176,7 +164,7 @@ void mergeInsertionSort(int ac, char **av){
         std::cout << *it << " ";
     }
     
-    std::cout << *it << std::endl;
+    std::cout << std::endl;
     
 
     // // * check if we have a even or odd vector and deque if is odd we need to store the last element in variable and the remove it to be contaier even
