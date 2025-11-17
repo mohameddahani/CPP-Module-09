@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/16 18:43:09 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/17 11:44:50 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ bool comparison(long a, long b){
 
 
 
-static void mergeMainAndPendChains(std::vector<long>&mainChain, std::vector<long>&pendChain){
-    
+static void mergeMainAndPendChains(std::vector<long>& mainChain,
+    std::vector<long>& pendChain){
+        
 }
+
 
 
 
@@ -185,14 +187,6 @@ void mergeInsertionSort(int ac, char **av){
     std::vector<long>pendChain;
 
     divisionIntoPairsAndSorting(vector, 2, mainChain, pendChain);
-
-    // * print the vector after every step
-    std::vector<long>::iterator it = vector.begin();
-    for (; it != vector.end(); ++it){
-        std::cout << *it << " ";
-    }
-    
-    std::cout << std::endl;
     
     // * print the vector of main chain
     std::cout << "main: " << std::endl;
@@ -214,6 +208,20 @@ void mergeInsertionSort(int ac, char **av){
 
     // * merge the main and pend chains together
     mergeMainAndPendChains(mainChain, pendChain);
+
+
+    // * print all element befor sorting
+    std::vector<long>::iterator vectorItAfterSort = vector.begin();
+    
+    std::cout << "After: ";
+    
+    for(; vectorItAfterSort != vector.end(); ++vectorItAfterSort){
+        std::cout << *vectorItAfterSort << " ";
+    }
+
+    std::cout << std::endl;
+
+
     
     // * print the compairs numbers
     std::cout << "Comparisons: " << comparisons << std::endl;
