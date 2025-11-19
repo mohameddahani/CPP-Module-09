@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:26:05 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/12 09:05:03 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/19 17:23:57 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int main(int ac, char **av){
 
+    // ! CHECK MAX 3000 NUMBERS
     if (ac == 1){
         std::cerr << "Error: You should add numbers" << std::endl;
         return 1;
