@@ -6,7 +6,7 @@
 /*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/19 18:36:20 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/11/19 20:49:40 by mdahani          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,18 +162,21 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             // }
             
 
-            for (size_t i = 0; i < jacobsthalNumberVector.size(); i++){
-                // * get number of element that we need to push it to main chain
-                size_t numberOfElementThatWePush = jacobsthalNumberVector[1] - jacobsthalNumberVector[0];
-                for (size_t j = 0; j < numberOfElementThatWePush; j++){
-                    // * we decrement 2 because we need to acces to element from pend chain
-                    long elementFromPendChain = pendChain[jacobsthalNumberVector[1] - 2];
-                    std::cout << "elementFromPendChain: " << elementFromPendChain << std::endl;
+            size_t numberOfElementThatWePush = jacobsthalNumberVector[1] - jacobsthalNumberVector[0];
+            // * get number of element that we need to push it to main chain
+            for (size_t j = 0; j < numberOfElementThatWePush; j++){
+                // ! GET THE LARGER NUMBER OF PAIR TO DO BINARY SEARCH
+                // // * we decrement 2 because we need to acces to element from pend chain
+                long largeElemenOfPair = pendChain[jacobsthalNumberVector[1] + sizeOfPairs];
+                std::cout << "largeElemenOfPair: " << largeElemenOfPair << std::endl;
+                for (size_t i = 0; i < sizeOfPairs; i++){
+                    // ! PUSH THE ELEMENT OF PAIR TO PEND CHAIN
+    
+                    // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin());
+                    // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin() + 1);
                 }
-
-                jacobsthalNumberVector.erase(jacobsthalNumberVector.begin());
-                jacobsthalNumberVector.erase(jacobsthalNumberVector.begin() + 1);
             }
+
 
         } else {
             
