@@ -22,6 +22,8 @@
 #include <vector>
 #include <deque>
 #include <stack>
+#include <utility> // * for std::pair container
+#include <sstream> // * for string stream
 
 // * Functions
 void mergeInsertionSort(int ac, char **av);

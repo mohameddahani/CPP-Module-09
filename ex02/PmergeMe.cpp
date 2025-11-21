@@ -32,7 +32,8 @@ bool comparison(long a, long b){
 // ! DON'T FORGET FLAGS IN MAKEFILE
 
 
-static bool getJacobsthalNumber(std::vector<long>&pendChain, std::vector<long>&jacobsthalNumberVector, int sizeOfPairs){
+static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<long>>>&pendChain,
+    std::vector<long>&jacobsthalNumberVector, int sizeOfPairs){
     // * clear the old data from jacobsthalNumberVector befor add the new numbers
     jacobsthalNumberVector.clear();
 
@@ -41,12 +42,13 @@ static bool getJacobsthalNumber(std::vector<long>&pendChain, std::vector<long>&j
         for (size_t j = 0; j < 65; j++){
             if (i + 2 == jacobNums[j]){
                 // * store the Jacobsthal Number in vector
-                jacobsthalNumberVector.push_back(jacobNums[j - 1]);   
-                jacobsthalNumberVector.push_back(jacobNums[j]);
+                jacobsthalNumberVector.push_back(jacobNums[j - 1]); // * store the prev jacobsthal number first
+                jacobsthalNumberVector.push_back(jacobNums[j]); // * store the jacobsthal number second
             }
         }
     }
     
+    // * there no jacobsthal numbers
     if (jacobsthalNumberVector.empty()){
         return false;
     }
@@ -56,16 +58,17 @@ static bool getJacobsthalNumber(std::vector<long>&pendChain, std::vector<long>&j
 
 
 
-static void mergeMainAndPendChains(std::vector<long>& mainChain,
-    std::vector<long>& pendChain){
+// static void mergeMainAndPendChains(std::vector<long>& mainChain,
+//     std::vector<long>& pendChain){
         
-}
+// }
 
 
 
 
 static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs,
-    std::vector<long>&mainChain, std::vector<long>&pendChain){
+    std::vector<std::pair<std::string, std::vector<long>>>&mainChain,
+    std::vector<std::pair<std::string, std::vector<long>>>&pendChain){
         // * vector
         // 10 9 8 7 6 5 4 3 2 1 0
         // [9 10] [7 8] [5 6] [3 4] [1 2] 0
@@ -101,49 +104,58 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
 
         // * recall the function
         divisionIntoPairsAndSorting(vector, sizeOfPairs * 2, mainChain, pendChain);
+
+        std::cout << "================================" << std::endl;
+        std::cout << "size of pairs: " << sizeOfPairs << std::endl;
     
         // ? logic of insertion
         bool isb1Pushed = false;
         bool isasPushed = false;
 
+        // * vector of pair
+        std::vector<long>vectorOfPair;
+
         // * (vector.size() / sizeOfPairs > 2): thats mean we have more than 2 pairs
+        unsigned int orderOfPairs = 0;
         for (size_t i = 0; (i + sizeOfPairs <= vector.size()) && ((vector.size() / sizeOfPairs) > 2); i += sizeOfPairs){
-            // * index comparison in every recusion
-            // ! 0-1 | 2-3 ... (index comparison in every recusion)
-            // ! 1-3 | 5-7 ... (index comparison in every recusion)
-            // ! 3-7 | 11-15 ... (index comparison in every recusion)
-            // size_t bs = i + (sizeOfPairs / 2) - 1;
-            // size_t as = i + sizeOfPairs - 1;
+            // * clear vector
+            vectorOfPair.clear();
 
-            // * calculate the start of range and end to push it into main or pend chain
-            std::vector<long>::iterator startOfBlock = vector.begin() + i;
-            std::vector<long>::iterator endOfBlock = vector.begin() + i + sizeOfPairs;
+            // * push all size of pair numbers to vector of pair
+            for (size_t j = i; j < sizeOfPairs + i; j++){
+                vectorOfPair.push_back(vector[j]);
+            }
+
+            // * use string stream to convert fom int to string
+            std::stringstream ss;
+
+            // * name of pair
+            std::string label;
+
+            if (orderOfPairs % 2 == 0){
+                // * even index → a1, a2, a3...
+                ss << orderOfPairs / 2 + 1;
+                label = "b";
+                label += ss.str();
+            } else {
+                // * odd index → b1, b2, b3...
+                ss << orderOfPairs / 2 + 1;
+                label = "a";
+                label += ss.str();
+            }
+            orderOfPairs++;
+
             // * push b1 and all a's
-
-            // * push b1 to main chain
-            if (!isb1Pushed){
-                for (; startOfBlock != endOfBlock; ++startOfBlock){
-                    mainChain.push_back(*startOfBlock);
-                }
-                isb1Pushed = true;
-                continue;
-            }
-            
-            if (!isasPushed){
-                // * push all a's to main chain
-                for (; startOfBlock != endOfBlock; ++startOfBlock){
-                    mainChain.push_back(*startOfBlock);
-                }
-                
-                isasPushed = true;
-            } else {               
+            if (label == "b1"){
+                // * push b1 to main chain
+                mainChain.push_back(std::make_pair(label, vectorOfPair));
+            } else if (label[0] == 'b'){
                 // * push the rest of b's to pend chain
-                for (; startOfBlock != endOfBlock; ++startOfBlock){
-                    pendChain.push_back(*startOfBlock);
-                }
-                isasPushed = false;
+                pendChain.push_back(std::make_pair(label, vectorOfPair));
+            } else {               
+                // * push all a's to main chain
+                mainChain.push_back(std::make_pair(label, vectorOfPair));
             }
-
         }
 
         // ? insert the pend to main
@@ -153,58 +165,54 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         }
         
         // * get jacobsthal number
-        std::vector<long>jacobsthalNumberVector;
-        if (getJacobsthalNumber(pendChain, jacobsthalNumberVector, sizeOfPairs)){
-            // std::vector<long>::iterator itJacobsthalNumberVector = jacobsthalNumberVector.begin();
-            // std::cout << "itJacobsthalNumberVector: " << std::endl;
-            // for (; itJacobsthalNumberVector != jacobsthalNumberVector.end(); ++itJacobsthalNumberVector){
-            //     std::cout << *itJacobsthalNumberVector << std::endl;
-            // }
-            
-
-            size_t numberOfElementThatWePush = jacobsthalNumberVector[1] - jacobsthalNumberVector[0];
-            // * get number of element that we need to push it to main chain
-            for (size_t j = 0; j < numberOfElementThatWePush; j++){
-                // ! GET THE LARGER NUMBER OF PAIR TO DO BINARY SEARCH
-                // // * we decrement 2 because we need to acces to element from pend chain
-                long largeElemenOfPair = pendChain[jacobsthalNumberVector[1] + sizeOfPairs];
-                std::cout << "largeElemenOfPair: " << largeElemenOfPair << std::endl;
-                for (size_t i = 0; i < sizeOfPairs; i++){
-                    // ! PUSH THE ELEMENT OF PAIR TO PEND CHAIN
+        // std::vector<long>jacobsthalNumberVector;
+        // if (getJacobsthalNumber(pendChain, jacobsthalNumberVector, sizeOfPairs)){
+        //     // * get number of element that we need to push it to main chain
+        //     size_t numberOfElementThatWePush = jacobsthalNumberVector[1] - jacobsthalNumberVector[0];
+        //     for (size_t i = 0; i < numberOfElementThatWePush; i++){
+        //         // ! GET THE LARGER NUMBER OF PAIR TO DO BINARY SEARCH
+        //         long largeElemenOfPair = pendChain[jacobsthalNumberVector[1] + sizeOfPairs];
+        //         std::cout << "largeElemenOfPair: " << largeElemenOfPair << std::endl;
+        //         for (size_t j = 0; j < sizeOfPairs; j++){
+        //             // ! PUSH THE ELEMENT OF PAIR TO PEND CHAIN
+        //             std::vector<long>::iterator itBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair);
+        //             std::cout << "*itBound: " << *itBound << std::endl;
     
-                    // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin());
-                    // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin() + 1);
-                }
-            }
+        //             // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin());
+        //             // jacobsthalNumberVector.erase(jacobsthalNumberVector.begin() + 1);
+        //         }
+        //     }
 
 
-        } else {
+        // } else {
             
-        }
+        // }
 
         
         std::cout << "================================" << std::endl;
-        std::cout << "size of pairs: " << sizeOfPairs << std::endl;
-
         
         // * print the vector of main chain
         std::cout << "main: " << std::endl;
-        std::vector<long>::iterator itMainChain = mainChain.begin();
-        for (; itMainChain != mainChain.end(); ++itMainChain){
-            std::cout << *itMainChain << " ";
+        for (size_t i = 0; i < mainChain.size(); i++){
+            std::cout << mainChain[i].first << " = ";
+            for (size_t j = 0; j < mainChain[i].second.size(); j++){
+                std::cout << mainChain[i].second[j] << " ";
+            }
+            std::cout << std::endl;
         }
-        
-        std::cout << std::endl;
 
         // * print the vector of pend chain
         std::cout << "pend: " << std::endl;
-        std::vector<long>::iterator itPendChain = pendChain.begin();
-        for (; itPendChain != pendChain.end(); ++itPendChain){
-            std::cout << *itPendChain << " ";
+        for (size_t i = 0; i < pendChain.size(); i++){
+            std::cout << pendChain[i].first << " = ";
+            for (size_t j = 0; j < pendChain[i].second.size(); j++){
+                std::cout << pendChain[i].second[j] << " ";
+            }
+            std::cout << std::endl;
         }
-        
-        std::cout << std::endl;
 
+
+        exit(0);
         return;
 }
 
@@ -303,9 +311,9 @@ void mergeInsertionSort(int ac, char **av){
 
     // todo: Step 1: the division into the pairs & sorting
     // * Main chain vector
-    std::vector<long>mainChain;
+    std::vector<std::pair<std::string, std::vector<long>>>mainChain;
     // * Pend chain vector
-    std::vector<long>pendChain;
+    std::vector<std::pair<std::string, std::vector<long>>>pendChain;
 
     divisionIntoPairsAndSorting(vector, 2, mainChain, pendChain);
     
@@ -328,7 +336,7 @@ void mergeInsertionSort(int ac, char **av){
     // std::cout << std::endl;
 
     // * merge the main and pend chains together
-    mergeMainAndPendChains(mainChain, pendChain);
+    // mergeMainAndPendChains(mainChain, pendChain);
 
 
     // // * print all element befor sorting
