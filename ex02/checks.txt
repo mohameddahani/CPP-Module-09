@@ -1,0 +1,2 @@
+check if i give only 1 num
+check if i give only 2 num s

@@ -12,6 +12,7 @@
 
 #include "PmergeMe.hpp"
 
+// * all jacobsthal numbers that can we use it in this exercice
 long long jacobNums[65] = {0,1,1,3,5,11,21,43,85,171,341,683,1365,2731,5461,10923,21845,43691,87381,
     174763,349525,699051,1398101,2796203,5592405,11184811,22369621,44739243,89478485,178956971,357913941,
     715827883,1431655765,2863311531,5726623061,11453246123,22906492245,45812984491,91625968981,183251937963,
@@ -23,15 +24,22 @@ long long jacobNums[65] = {0,1,1,3,5,11,21,43,85,171,341,683,1365,2731,5461,1092
 // * Calculation the number of Comparisons
 static unsigned long long comparisons = 0;
 
+// * this func is to compaire the largest numbers in pair
 bool comparison(long a, long b){
     comparisons++;
     return a > b;
 }
 
+// * function of lower bound to get index of insert
+bool compFunc(std::pair<std::string, std::vector<long> > &pair, long value){
+    comparisons++;
+    return pair.second.back() < value;   // * same as default
+}
+
 
 // ! DON'T FORGET FLAGS IN MAKEFILE
 
-
+// * get jacobsthal numbers
 static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<long>>>&pendChain,
     std::vector<long>&jacobsthalNumberVector){
     // * clear the old data from jacobsthalNumberVector befor add the new numbers
@@ -59,12 +67,6 @@ static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<l
     return true;
 }
 
-// * function of lower bound to get index of insert
-bool compFunc(std::pair<std::string, std::vector<long> > &pair, long value){
-    comparisons++;
-    return pair.second.back() < value;   // * same as default
-}
-
 
 
 static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs,
@@ -81,7 +83,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         //        main                 pend
 
         for (int i = 0; i + sizeOfPairs <= vector.size(); i += sizeOfPairs){
-            // * index of comparison in every recusion
+            // * index of comparison of largest number in every pair in recusion
             // ! 0-1 | 2-3 ... (index comparison in every recusion)
             // ! 1-3 | 5-7 ... (index comparison in every recusion)
             // ! 3-7 | 11-15 ... (index comparison in every recusion)
@@ -100,7 +102,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
 
          std::cout << "size of pairs befor recursion: " << sizeOfPairs << std::endl;
         
-        // * condition of stop recusion that's mean when we division into pairs and we has only 1 pairs then we need to stop
+        // * condition of call recusion that's mean when we division into pairs and we has more than 1 pair then we need to do recursion
         if (vector.size() / sizeOfPairs >= 2){
             // * recall the function
             divisionIntoPairsAndSorting(vector, sizeOfPairs * 2, mainChain, pendChain);
@@ -108,16 +110,16 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
 
         std::cout << "size of pairs after recursion: " << sizeOfPairs << std::endl;
     
-        // ? logic of insertion
+        // ? LOGIC OF INSERTION
         bool isb1Pushed = false;
         bool isasPushed = false;
 
-        // * vector of pair
+        // * vector of number of pair
         std::vector<long>vectorOfPair;
 
         // * store element to main and pend chain
         unsigned int orderOfPairs = 0;
-        // * is length number of one single pair
+        // * is length numbers of one single pair
         unsigned int lengthOfOnePair = sizeOfPairs / 2;
         for (int i = 0; i + lengthOfOnePair <= vector.size(); i += lengthOfOnePair){
             // * clear vector
@@ -135,12 +137,12 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             std::string key;
 
             if (orderOfPairs % 2 == 0){
-                // * even index → a1, a2, a3...
+                // * odd index → b1, b2, b3...
                 ss << orderOfPairs / 2 + 1;
                 key = "b";
                 key += ss.str();
             } else {
-                // * odd index → b1, b2, b3...
+                // * even index → a1, a2, a3...
                 ss << orderOfPairs / 2 + 1;
                 key = "a";
                 key += ss.str();
@@ -185,7 +187,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
 
 
 
-        // ? Insert the pend to main
+        // ? INSERT THE PEND CHAIN TO MAIN CHAIN
         // * check if pend empty
         if (pendChain.empty()){
             // * Clear the main chain if pend is empty
@@ -308,7 +310,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             }
 
         } else {
-            // * check if there no jacobsthal numbers but we still have an pair in pend chain
+            // * check if there no jacobsthal numbers but we still have an pairs in pend chain
             // * then we need to push all pairs by revers like from end to start
             for (int count = pendChain.size() - 1; count >= 0; count--){
                 // * get the larger number of pair to do binary search
@@ -422,8 +424,6 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             std::cout << vector[i] << " ";
         }
         std::cout << std::endl;
-
-        return;
 }
 
 static double getTimeByUs(){
@@ -526,6 +526,12 @@ void mergeInsertionSort(int ac, char **av){
     std::vector<std::pair<std::string, std::vector<long>>>pendChain;
 
     divisionIntoPairsAndSorting(vector, 2, mainChain, pendChain);
+
+    if (std::is_sorted(vector.begin(), vector.end())){
+        std::cout << "Sorted\n";
+    } else {
+        std::cout << "Not sorted\n";
+    }
     
     // // * print the vector of main chain
     // std::cout << "main: " << std::endl;
