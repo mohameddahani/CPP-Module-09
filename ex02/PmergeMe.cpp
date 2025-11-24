@@ -68,7 +68,6 @@ static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<l
 }
 
 
-
 static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs,
     std::vector<std::pair<std::string, std::vector<long> > >&mainChain,
     std::vector<std::pair<std::string, std::vector<long> > >&pendChain){
@@ -100,7 +99,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             }
         }
 
-         std::cout << "size of pairs befor recursion: " << sizeOfPairs << std::endl;
+        //  std::cout << "size of pairs befor recursion: " << sizeOfPairs << std::endl;
         
         // * condition of call recusion that's mean when we division into pairs and we has more than 1 pair then we need to do recursion
         if (vector.size() / sizeOfPairs >= 2){
@@ -108,7 +107,7 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             divisionIntoPairsAndSorting(vector, sizeOfPairs * 2, mainChain, pendChain);
         }
 
-        std::cout << "size of pairs after recursion: " << sizeOfPairs << std::endl;
+        // std::cout << "size of pairs after recursion: " << sizeOfPairs << std::endl;
     
         // ? LOGIC OF INSERTION
 
@@ -161,25 +160,25 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         }
 
 
-        // * print the vector of main chain
-        std::cout << "main111111111111: " << std::endl;
-        for (size_t i = 0; i < mainChain.size(); i++){
-            std::cout << mainChain[i].first << " = ";
-            for (size_t j = 0; j < mainChain[i].second.size(); j++){
-                std::cout << mainChain[i].second[j] << " ";
-            }
-            std::cout << std::endl;
-        }
+        // // * print the vector of main chain
+        // // std::cout << "main111111111111: " << std::endl;
+        // for (size_t i = 0; i < mainChain.size(); i++){
+        //     std::cout << mainChain[i].first << " = ";
+        //     for (size_t j = 0; j < mainChain[i].second.size(); j++){
+        //         std::cout << mainChain[i].second[j] << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
 
-        // * print the vector of pend chain
-        std::cout << "pend111111111111111: " << std::endl;
-        for (size_t i = 0; i < pendChain.size(); i++){
-            std::cout << pendChain[i].first << " = ";
-            for (size_t j = 0; j < pendChain[i].second.size(); j++){
-                std::cout << pendChain[i].second[j] << " ";
-            }
-            std::cout << std::endl;
-        }
+        // // * print the vector of pend chain
+        // std::cout << "pend111111111111111: " << std::endl;
+        // for (size_t i = 0; i < pendChain.size(); i++){
+        //     std::cout << pendChain[i].first << " = ";
+        //     for (size_t j = 0; j < pendChain[i].second.size(); j++){
+        //         std::cout << pendChain[i].second[j] << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
 
 
         // ? INSERT THE PEND CHAIN TO MAIN CHAIN
@@ -383,56 +382,56 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         mainChain.clear();
         pendChain.clear();
 
-        std::cout << "================================" << std::endl;
+        // std::cout << "================================" << std::endl;
         
-        // * print the vector of main chain
-        std::cout << "main: " << std::endl;
-        for (size_t i = 0; i < mainChain.size(); i++){
-            std::cout << mainChain[i].first << " = ";
-            for (size_t j = 0; j < mainChain[i].second.size(); j++){
-                std::cout << mainChain[i].second[j] << " ";
-            }
-            std::cout << std::endl;
-        }
+        // // * print the vector of main chain
+        // std::cout << "main: " << std::endl;
+        // for (size_t i = 0; i < mainChain.size(); i++){
+        //     std::cout << mainChain[i].first << " = ";
+        //     for (size_t j = 0; j < mainChain[i].second.size(); j++){
+        //         std::cout << mainChain[i].second[j] << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
 
-        // * print the vector of pend chain
-        std::cout << "pend: " << std::endl;
-        for (size_t i = 0; i < pendChain.size(); i++){
-            std::cout << pendChain[i].first << " = ";
-            for (size_t j = 0; j < pendChain[i].second.size(); j++){
-                std::cout << pendChain[i].second[j] << " ";
-            }
-            std::cout << std::endl;
-        }
+        // // * print the vector of pend chain
+        // std::cout << "pend: " << std::endl;
+        // for (size_t i = 0; i < pendChain.size(); i++){
+        //     std::cout << pendChain[i].first << " = ";
+        //     for (size_t j = 0; j < pendChain[i].second.size(); j++){
+        //         std::cout << pendChain[i].second[j] << " ";
+        //     }
+        //     std::cout << std::endl;
+        // }
 
-        // * print the rest vector 
-        std::cout << "rest: " << std::endl;
-        for (size_t i = 0; i < theRestOfVector.size(); i++){
-            std::cout << theRestOfVector[i] << " ";
-        }
-        std::cout << std::endl;
+        // // * print the rest vector 
+        // std::cout << "rest: " << std::endl;
+        // for (size_t i = 0; i < theRestOfVector.size(); i++){
+        //     std::cout << theRestOfVector[i] << " ";
+        // }
+        // std::cout << std::endl;
 
         
-        // * print the original vector 
-        std::cout << "the original vector: " << std::endl;
-        for (size_t i = 0; i < vector.size(); i++){
-            std::cout << vector[i] << " ";
-        }
-        std::cout << std::endl;
+        // // * print the original vector 
+        // std::cout << "the original vector: " << std::endl;
+        // for (size_t i = 0; i < vector.size(); i++){
+        //     std::cout << vector[i] << " ";
+        // }
+        // std::cout << std::endl;
 }
 
-// static double getTimeByUs(){
-//     // ? timespec this is like a `struct timeval' but has nanoseconds not microseconds
-//     // ? is used to store time
-//     struct timespec time;
+static double getTimeByUs(){
+    // ? timespec this is like a `struct timeval' but has nanoseconds not microseconds
+    // ? is used to store time
+    struct timespec time;
 
-//     // ? this func get time by clock id like (CLOCK_REALTIME) this will get time from 01/01/1970
-//     // ? and he will store it in sturct timespec
-//     clock_gettime(CLOCK_REALTIME, &time);
+    // ? this func get time by clock id like (CLOCK_REALTIME) this will get time from 01/01/1970
+    // ? and he will store it in sturct timespec
+    clock_gettime(CLOCK_REALTIME, &time);
 
-//     // ? now we convert the seconds to microseconds and add the rest of nanoseconds
-//     return (time.tv_sec * 1e6) + (time.tv_nsec / 1e3);
-// }
+    // ? now we convert the seconds to microseconds and add the rest of nanoseconds
+    return (time.tv_sec * 1e6) + (time.tv_nsec / 1e3);
+}
 
 void mergeInsertionSort(int ac, char **av){
     // ? PARSING
@@ -501,7 +500,7 @@ void mergeInsertionSort(int ac, char **av){
     }
 
 
-    // ? ford johnson algorithm (Merge-Insertion Sort)
+    // ? FORD JOHNSON ALGORITHM (MERGE-INSERTION SORT)
 
     // * print all element befor sorting
     std::vector<long>::iterator vectorItBeforSort = vector.begin();
@@ -514,179 +513,76 @@ void mergeInsertionSort(int ac, char **av){
 
     std::cout << std::endl;
 
-    // todo: Step 1: the division into the pairs & sorting
+    // todo: the division into the pairs & sorting
+    // ! VECTOR
+
     // * Main chain vector
-    std::vector<std::pair<std::string, std::vector<long> > >mainChain;
+    std::vector<std::pair<std::string, std::vector<long> > >vectorMainChain;
     // * Pend chain vector
-    std::vector<std::pair<std::string, std::vector<long> > >pendChain;
+    std::vector<std::pair<std::string, std::vector<long> > >vectorPendChain;
 
-    divisionIntoPairsAndSorting(vector, 2, mainChain, pendChain);
+    // * get time by microseconds befor sorting by vector
+    double startTime = getTimeByUs();
 
-    if (std::is_sorted(vector.begin(), vector.end())){
-        std::cout << "Sorted\n";
-    } else {
-        std::cout << "Not sorted\n";
+    // * Process of vector
+    divisionIntoPairsAndSorting(vector, 2, vectorMainChain, vectorPendChain);
+
+    // * get time by microseconds after sorting by vector
+    double endTime = getTimeByUs();
+
+    // * print all element after sorting
+    std::vector<long>::iterator vectorItAfterSort = vector.begin();
+    
+    std::cout << "After: ";
+    
+    for(; vectorItAfterSort != vector.end(); ++vectorItAfterSort){
+        std::cout << *vectorItAfterSort << " ";
     }
-    
-    // // * print the vector of main chain
-    // std::cout << "main: " << std::endl;
-    // std::vector<long>::iterator itMainChain = mainChain.begin();
-    // for (; itMainChain != mainChain.end(); ++itMainChain){
-    //     std::cout << *itMainChain << " ";
-    // }
-    
-    // std::cout << std::endl;
 
-    // // * print the vector of pend chain
-    // std::cout << "pend: " << std::endl;
-    // std::vector<long>::iterator itPendChain = pendChain.begin();
-    // for (; itPendChain != pendChain.end(); ++itPendChain){
-    //     std::cout << *itPendChain << " ";
-    // }
-    
-    // std::cout << std::endl;
+    std::cout << std::endl;
 
-    // * merge the main and pend chains together
-    // mergeMainAndPendChains(mainChain, pendChain);
+    // * print time of excution by microseconds
+    std::cout << std::fixed << std::setprecision(5)
+        << "Time to process a range of "
+        << vector.size() << " elements with std::[vector] : "
+        << endTime - startTime << "µs" << std::endl;
 
-
-    // // * print all element befor sorting
-    // std::vector<long>::iterator vectorItAfterSort = vector.begin();
-    
-    // std::cout << "After: ";
-    
-    // for(; vectorItAfterSort != vector.end(); ++vectorItAfterSort){
-    //     std::cout << *vectorItAfterSort << " ";
-    // }
-
-    // std::cout << std::endl;
-
-
-    
-    // * print the compairs numbers
+    // * print the number of Comparisons
     std::cout << "Comparisons: " << comparisons << std::endl;
 
-    // // * check if we have a even or odd vector and deque if is odd we need to store the last element in variable and the remove it to be contaier even
-    // bool isEven = true;
-    // long lastElement = 0;
-    // if (vector.size() % 2 != 0){
-    //     lastElement = vector.back();
-    //     vector.pop_back();
-    //     deque.pop_back();
+    // ! DEQUE
 
-    //     isEven = false;
-    // }
+    // * Main chain deque
+    std::deque<std::pair<std::string, std::deque<long> > >dequeMainChain;
+    // * Pend chain deque
+    std::deque<std::pair<std::string, std::deque<long> > >dequePendChain;
 
-    // // ! Sort the Vector
-    // // * get time by microseconds befor sorting 
-    // double startTime = getTimeByUs();
+    // * get time by microseconds befor sorting by deque
+    startTime = getTimeByUs();
 
+    // * Process of deque
+    // divisionIntoPairsAndSorting(deque, 2, dequeMainChain, dequePendChain);
 
-    // // * Main chain and Second chain of vector
-    // std::vector<long>vectorMainChain;
-    // std::vector<long>vectorSecondChain;
+    // * get time by microseconds after sorting by deque
+    endTime = getTimeByUs();
 
-    // // * Dividing into pairs and Sort the pairs in vector
-    // for (size_t i = 0; i < vector.size(); i+= 2){
-    //     // * vector
-    //     if (vector[i] > vector[i + 1]){
-    //         std::swap(vector[i], vector[i + 1]);
-    //     }
-    // }
-    
-    // // * Forming two chains in vector
-    // for (size_t i = 0; i < vector.size(); i+= 2){
-    //     // * vector
-    //     vectorMainChain.push_back(vector[i + 1]);
-    //     vectorSecondChain.push_back(vector[i]);
-    // }
+    // * print time of excution by microseconds
+    std::cout << std::fixed << std::setprecision(5)
+        << "Time to process a range of "
+        << deque.size() << " elements with std::[deque] : "
+        << endTime - startTime << "µs" << std::endl;
 
-    // // * check if we has a odd vector (push the last element that we remove it in the begin in second chain of vector)
-    // if (!isEven){
-    //     // * vector
-    //     vectorSecondChain.push_back(lastElement);
-    // }
-    
+    // * check numbers of vector if sorted
+    if (std::is_sorted(vector.begin(), vector.end())){
+        std::cout << "Vector is Sorted\n";
+    } else {
+        std::cout << "Vector is Not sorted\n";
+    }
 
-    // // * Sort the main chain of vector
-    // std::sort(vectorMainChain.begin(), vectorMainChain.end());
-
-    // // * Merge chains of vector (Add the small numbers to main chain: every single one we need to add him to correct place)
-    // std::vector<long>::iterator itVectorInsert;
-    // for (size_t i = 0; i < vectorSecondChain.size(); i++){
-    //     // * vector
-    //     itVectorInsert = std::lower_bound(vectorMainChain.begin(), vectorMainChain.end(), vectorSecondChain[i]);
-    //     vectorMainChain.insert(itVectorInsert, vectorSecondChain[i]);
-    // }
-    
-    // // * get time by microseconds after sorting 
-    // double endTime = getTimeByUs();
-
-    // // * print all element after sorting
-    // std::vector<long>::iterator vectorItAfterSort = vectorMainChain.begin();
-    
-    // std::cout << "After: ";
-    
-    // for(; vectorItAfterSort != vectorMainChain.end(); ++vectorItAfterSort){
-    //     std::cout << *vectorItAfterSort << " ";
-    // }
-
-    // std::cout << std::endl;
-
-    // // * print time of excution by microseconds
-    // std::cout << std::fixed << std::setprecision(5)
-    //     << "Time to process a range of "
-    //     << (isEven ? vector.size() : vector.size() + 1) << " elements with std::[vector] : "
-    //     << endTime - startTime << "µs" << std::endl;
-
-
-    // // ! Sort the Deque
-    // // * get time by microseconds befor sorting 
-    // startTime = getTimeByUs();
-    
-    // // * Main chain and Second chain of deque
-    // std::deque<long>dequeMainChain;
-    // std::deque<long>dequeSecondChain;
-
-    // // * Dividing into pairs and Sort the pairs in deque
-    // for (size_t i = 0; i < deque.size(); i+= 2){
-    //     // * deque
-    //     if (deque[i] > deque[i + 1]){
-    //         std::swap(deque[i], deque[i + 1]);
-    //     }
-    // }
-    
-    // // * Forming two chains in deque
-    // for (size_t i = 0; i < deque.size(); i+= 2){
-    //     // * deque
-    //     dequeMainChain.push_back(deque[i + 1]);
-    //     dequeSecondChain.push_back(deque[i]);
-    // }
-
-    // // * check if we has a odd deque (push the last element that we remove it in the begin in second chain of deque)
-    // if (!isEven){
-    //     // * deque
-    //     dequeSecondChain.push_back(lastElement);
-    // }
-    
-
-    // // * Sort the main chain of deque
-    // std::sort(dequeMainChain.begin(), dequeMainChain.end());
-
-    // // * Merge chains of deque (Add the small numbers to main chain: every single one we need to add him to correct place)
-    // std::deque<long>::iterator itDequeInsert;
-    // for (size_t i = 0; i < dequeSecondChain.size(); i++){
-    //     // * deque
-    //     itDequeInsert = std::lower_bound(dequeMainChain.begin(), dequeMainChain.end(), dequeSecondChain[i]);
-    //     dequeMainChain.insert(itDequeInsert, dequeSecondChain[i]);
-    // }
-    
-    // // * get time by microseconds after sorting 
-    // endTime = getTimeByUs();
-
-    // // * print time of excution by microseconds
-    // std::cout << std::fixed << std::setprecision(5)
-    //     << "Time to process a range of "
-    //     << (isEven ? deque.size() : deque.size() + 1) << " elements with std::[deque] : "
-    //     << endTime - startTime << "µs" << std::endl;
+    // * check numbers of deque if sorted
+    if (std::is_sorted(deque.begin(), deque.end())){
+        std::cout << "Deque is Sorted\n";
+    } else {
+        std::cout << "Deque is Not sorted\n";
+    }
 }
