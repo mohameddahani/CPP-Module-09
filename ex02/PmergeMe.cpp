@@ -30,20 +30,21 @@ bool comparison(long a, long b){
     return a > b;
 }
 
+template<typename TPairChain>
 // * function of lower bound to get index of insert
-bool compFunc(std::pair<std::string, std::vector<long> > &pair, long value){
-    comparisons++;
-    return pair.second.back() < value;   // * same as default
-}
+struct compFunc {
+    bool operator()(const TPairChain &pair, const long value){
+        comparisons++;
+        return pair.second.back() < value;   // * same as default
+    }
+};
 
-
-// ! DON'T FORGET FLAGS IN MAKEFILE
-
+template<typename TContainer, typename TChain>
 // * get jacobsthal numbers
-static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<long> > >&pendChain,
-    std::vector<long>&jacobsthalNumberVector){
-    // * clear the old data from jacobsthalNumberVector befor add the new numbers
-    jacobsthalNumberVector.clear();
+static bool getJacobsthalNumber(TChain &pendChain,
+    TContainer &jacobsthalNumberContainer){
+    // * clear the old data from jacobsthalNumberContainer befor add the new numbers
+    jacobsthalNumberContainer.clear();
 
     // * get the get Jacobsthal Number
     for (size_t i = 0; i < pendChain.size(); i++){
@@ -52,15 +53,15 @@ static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<l
 
         for (int j = 0; j < 65; j++){
             if (numOfChainWithoutBLetter == jacobNums[j]){
-                // * store the Jacobsthal Number in vector
-                jacobsthalNumberVector.push_back(jacobNums[j - 1]); // * store the prev jacobsthal number first
-                jacobsthalNumberVector.push_back(jacobNums[j]); // * store the jacobsthal number second
+                // * store the Jacobsthal Number in Container
+                jacobsthalNumberContainer.push_back(jacobNums[j - 1]); // * store the prev jacobsthal number first
+                jacobsthalNumberContainer.push_back(jacobNums[j]); // * store the jacobsthal number second
             }
         }
     }
     
     // * there no jacobsthal numbers
-    if (jacobsthalNumberVector.empty()){
+    if (jacobsthalNumberContainer.empty()){
         return false;
     }
     
@@ -68,21 +69,25 @@ static bool getJacobsthalNumber(std::vector<std::pair<std::string, std::vector<l
 }
 
 
-static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPairs,
-    std::vector<std::pair<std::string, std::vector<long> > >&mainChain,
-    std::vector<std::pair<std::string, std::vector<long> > >&pendChain){
-        // * vector
+template<typename TContainer, typename TChain>
+
+static void divisionIntoPairsAndSorting(TContainer &container, int sizeOfPairs,
+    TChain &mainChain,
+    TChain &pendChain){
         // 10 9 8 7 6 5 4 3 2 1 0
         // [9 10] [7 8] [5 6] [3 4] [1 2] 0
-        // [a1 b1] [a2 b2] [a3 b3] [a4 b4] [a5 b5] a6
-
+        // [b1 a1] [a2 a2] [a3 a3] [a4 a4] [a5 a5]
+        
         // [(7 8) (9 10)] [(3 4) (5 6)] 1 2 0
+        // [b1        a1] [a2       a2]
         // [(3 4 5 6) (7 8 9 10)] 1 2 0
-        // 3 4 5 6 7 8 9 10           1 2 0
-        //        main                 pend
+        // [b1                a1]
 
-        for (size_t i = 0; i + sizeOfPairs <= vector.size(); i += sizeOfPairs){
-            // * index of comparison of largest number in every pair in recusion
+        //        main                 pend
+        // b1 a1 a2 ... a's             b2 b3 b4 ... b's
+
+        for (size_t i = 0; i + sizeOfPairs <= container.size(); i += sizeOfPairs){
+            // * index of comparison of largest number in every pair in every level of recusion
             // ! 0-1 | 2-3 ... (index comparison in every recusion)
             // ! 1-3 | 5-7 ... (index comparison in every recusion)
             // ! 3-7 | 11-15 ... (index comparison in every recusion)
@@ -90,11 +95,11 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             int as = i + sizeOfPairs - 1;
 
             // * calculate the start of range and end and start Of second range to swap
-            std::vector<long>::iterator startOfBlock = vector.begin() + i;
-            std::vector<long>::iterator endOfBlock = vector.begin() + i + sizeOfPairs / 2;
-            std::vector<long>::iterator startOfSecondBlock =  vector.begin() + i + sizeOfPairs / 2;
+            typename TContainer::iterator startOfBlock = container.begin() + i;
+            typename TContainer::iterator endOfBlock = container.begin() + i + sizeOfPairs / 2;
+            typename TContainer::iterator startOfSecondBlock =  container.begin() + i + sizeOfPairs / 2;
 
-            if (comparison(vector[bs], vector[as])) {
+            if (comparison(container[bs], container[as])) {
                 std::swap_ranges(startOfBlock, endOfBlock, startOfSecondBlock);
             }
         }
@@ -102,29 +107,29 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         //  std::cout << "size of pairs befor recursion: " << sizeOfPairs << std::endl;
         
         // * condition of call recusion that's mean when we division into pairs and we has more than 1 pair then we need to do recursion
-        if (vector.size() / sizeOfPairs >= 2){
+        if (container.size() / sizeOfPairs >= 2){
             // * recall the function
-            divisionIntoPairsAndSorting(vector, sizeOfPairs * 2, mainChain, pendChain);
+            divisionIntoPairsAndSorting(container, sizeOfPairs * 2, mainChain, pendChain);
         }
 
         // std::cout << "size of pairs after recursion: " << sizeOfPairs << std::endl;
     
         // ? LOGIC OF INSERTION
 
-        // * vector of number of pair
-        std::vector<long>vectorOfPair;
+        // * container that store the numbers inside of pair
+        TContainer containerOfPair;
 
         // * store element to main and pend chain
         unsigned int orderOfPairs = 0;
         // * is length numbers of one single pair
         unsigned int lengthOfOnePair = sizeOfPairs / 2;
-        for (int i = 0; i + lengthOfOnePair <= vector.size(); i += lengthOfOnePair){
-            // * clear vector
-            vectorOfPair.clear();
+        for (int i = 0; i + lengthOfOnePair <= container.size(); i += lengthOfOnePair){
+            // * clear the container
+            containerOfPair.clear();
 
-            // * push all size of pair numbers to vector of pair
+            // * push all size of pair numbers to container of pair
             for (size_t j = i; j < lengthOfOnePair + i; j++){
-                vectorOfPair.push_back(vector[j]);
+                containerOfPair.push_back(container[j]);
             }
 
             // * use string stream to convert fom int to string
@@ -149,37 +154,15 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             // * push b1 and all a's
             if (key == "b1"){
                 // * push b1 to main chain
-                mainChain.push_back(std::make_pair(key, vectorOfPair));
+                mainChain.push_back(std::make_pair(key, containerOfPair));
             } else if (key[0] == 'b'){
                 // * push the rest of b's to pend chain
-                pendChain.push_back(std::make_pair(key, vectorOfPair));
+                pendChain.push_back(std::make_pair(key, containerOfPair));
             } else {               
                 // * push all a's to main chain
-                mainChain.push_back(std::make_pair(key, vectorOfPair));
+                mainChain.push_back(std::make_pair(key, containerOfPair));
             }
         }
-
-
-        // // * print the vector of main chain
-        // // std::cout << "main111111111111: " << std::endl;
-        // for (size_t i = 0; i < mainChain.size(); i++){
-        //     std::cout << mainChain[i].first << " = ";
-        //     for (size_t j = 0; j < mainChain[i].second.size(); j++){
-        //         std::cout << mainChain[i].second[j] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-
-        // // * print the vector of pend chain
-        // std::cout << "pend111111111111111: " << std::endl;
-        // for (size_t i = 0; i < pendChain.size(); i++){
-        //     std::cout << pendChain[i].first << " = ";
-        //     for (size_t j = 0; j < pendChain[i].second.size(); j++){
-        //         std::cout << pendChain[i].second[j] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-
 
         // ? INSERT THE PEND CHAIN TO MAIN CHAIN
         // * check if pend empty
@@ -190,20 +173,20 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         }
         
         // * get jacobsthal number and insert
-        std::vector<long>jacobsthalNumberVector;
-        if (getJacobsthalNumber(pendChain, jacobsthalNumberVector)){
+        TContainer jacobsthalNumberContainer;
+        if (getJacobsthalNumber(pendChain, jacobsthalNumberContainer)){
 
             // * we still looping until pend chain is empty
             while (!pendChain.empty()){
-                if (jacobsthalNumberVector.size() >= 2){
+                if (jacobsthalNumberContainer.size() >= 2){
                     // * get number of element that we need to push it to main chain
-                    int numberOfElementThatWePush = jacobsthalNumberVector[1] - jacobsthalNumberVector[0];
+                    int numberOfElementThatWePush = jacobsthalNumberContainer[1] - jacobsthalNumberContainer[0];
                     
                     // * create the key of pair from jacobsthal number
                     std::string key = "b";
         
                     std::stringstream ss;
-                    ss << jacobsthalNumberVector[1];
+                    ss << jacobsthalNumberContainer[1];
                     key += ss.str();
         
                     // * get index of pair by jacobsthal number
@@ -236,13 +219,16 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
                         long largeElemenOfPair = pendChain[j].second.back();
     
                         // * push the element of pair to main chain using lower bound
-                        std::vector<std::pair<std::string, std::vector<long> > >::iterator itLowerBound;
+                        typename TChain::iterator itLowerBound;
+
+                        // * create object of compFunc sturct
+                        compFunc<typename TChain::value_type> cmp;
             
                         // * check range
                         if (endOfRange == -1){
-                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, compFunc);
+                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, cmp);
                         } else {
-                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, compFunc);
+                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, cmp);
                         }
             
                         // * insert pair from pend to main chain
@@ -250,8 +236,8 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
                         // * remove him from pend
                         pendChain.erase(pendChain.begin() + j);
                         // * remove jacobsthal numbers (current and prev) that we use
-                        if (jacobsthalNumberVector.size() >= 2){
-                            jacobsthalNumberVector.erase(jacobsthalNumberVector.begin(), jacobsthalNumberVector.begin() + 1);
+                        if (jacobsthalNumberContainer.size() >= 2){
+                            jacobsthalNumberContainer.erase(jacobsthalNumberContainer.begin(), jacobsthalNumberContainer.begin() + 1);
                         }                        
                         // * decrement the var j to go to next pair because we are push element by revers order
                         if (j > 0){
@@ -285,13 +271,16 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
                         key.clear();
                         
                         // * push the element of pair to main chain using lower bound
-                        std::vector<std::pair<std::string, std::vector<long> > >::iterator itLowerBound;
+                        typename TChain::iterator itLowerBound;
+
+                        // * create object of compFunc sturct
+                        compFunc<typename TChain::value_type> cmp;
                         
                         // * check range
                         if (endOfRange == -1){
-                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, compFunc);
+                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, cmp);
                         } else {
-                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, compFunc);
+                            itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, cmp);
                         }
                         
                         // * insert pair from pend to main chain
@@ -330,13 +319,16 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
                 key.clear();
 
                 // * push the element of pair to main chain using lower bound
-                std::vector<std::pair<std::string, std::vector<long> > >::iterator itLowerBound;
+                typename TChain::iterator itLowerBound;
+
+                // * create object of compFunc sturct
+                compFunc<typename TChain::value_type> cmp;
     
                 // * check range
                 if (endOfRange == -1){
-                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, compFunc);
+                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, cmp);
                 } else {
-                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, compFunc);
+                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, cmp);
                 }
 
                 // * insert pair from pend to main chain
@@ -347,32 +339,32 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
             
         }
 
-        // * get rest element of vector that not belong to any pair
-        // * create a vector to store the rest element
-        std::vector<long> theRestOfVector;
-        if (mainChain.size() * lengthOfOnePair < vector.size()){
-            int theRest = vector.size() - mainChain.size() * lengthOfOnePair;
-            for (int i = vector.size() - 1; theRest > 0; i--){
-                theRestOfVector.insert(theRestOfVector.begin(), vector[i]);
+        // * get rest element of container that not belong to any pair
+        // * create a container to store the rest element
+        TContainer theRestOfContainer;
+        if (mainChain.size() * lengthOfOnePair < container.size()){
+            int theRest = container.size() - mainChain.size() * lengthOfOnePair;
+            for (int i = container.size() - 1; theRest > 0; i--){
+                theRestOfContainer.insert(theRestOfContainer.begin(), container[i]);
                 theRest--;
             }
         }
 
-        // * clear the original vector and push to him main chain and the rest
-        // * clear the vector
-        vector.clear();
+        // * clear the original container and push to him main chain and the rest
+        // * clear the container
+        container.clear();
 
-        // * push the element to him
+        // * push the element from main chain to container
         for (size_t i = 0; i < mainChain.size(); i++){
             for (size_t j = 0; j < mainChain[i].second.size(); j++){
-                vector.push_back(mainChain[i].second[j]);
+                container.push_back(mainChain[i].second[j]);
             }
         }
 
-        // * add the rest if we have it
-        if (!theRestOfVector.empty()){
-            for (size_t i = 0; i < theRestOfVector.size(); i++){
-                vector.push_back(theRestOfVector[i]);
+        // * push the rest of number in container if we have it
+        if (!theRestOfContainer.empty()){
+            for (size_t i = 0; i < theRestOfContainer.size(); i++){
+                container.push_back(theRestOfContainer[i]);
             }
             
         }
@@ -381,43 +373,6 @@ static void divisionIntoPairsAndSorting(std::vector<long>&vector, int sizeOfPair
         // * clear the main chain and pend
         mainChain.clear();
         pendChain.clear();
-
-        // std::cout << "================================" << std::endl;
-        
-        // // * print the vector of main chain
-        // std::cout << "main: " << std::endl;
-        // for (size_t i = 0; i < mainChain.size(); i++){
-        //     std::cout << mainChain[i].first << " = ";
-        //     for (size_t j = 0; j < mainChain[i].second.size(); j++){
-        //         std::cout << mainChain[i].second[j] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-
-        // // * print the vector of pend chain
-        // std::cout << "pend: " << std::endl;
-        // for (size_t i = 0; i < pendChain.size(); i++){
-        //     std::cout << pendChain[i].first << " = ";
-        //     for (size_t j = 0; j < pendChain[i].second.size(); j++){
-        //         std::cout << pendChain[i].second[j] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
-
-        // // * print the rest vector 
-        // std::cout << "rest: " << std::endl;
-        // for (size_t i = 0; i < theRestOfVector.size(); i++){
-        //     std::cout << theRestOfVector[i] << " ";
-        // }
-        // std::cout << std::endl;
-
-        
-        // // * print the original vector 
-        // std::cout << "the original vector: " << std::endl;
-        // for (size_t i = 0; i < vector.size(); i++){
-        //     std::cout << vector[i] << " ";
-        // }
-        // std::cout << std::endl;
 }
 
 static double getTimeByUs(){
@@ -548,7 +503,7 @@ void mergeInsertionSort(int ac, char **av){
         << endTime - startTime << "µs" << std::endl;
 
     // * print the number of Comparisons
-    std::cout << "Comparisons: " << comparisons << std::endl;
+    // std::cout << "Comparisons: " << comparisons << std::endl;
 
     // ! DEQUE
 
@@ -561,7 +516,7 @@ void mergeInsertionSort(int ac, char **av){
     startTime = getTimeByUs();
 
     // * Process of deque
-    // divisionIntoPairsAndSorting(deque, 2, dequeMainChain, dequePendChain);
+    divisionIntoPairsAndSorting(deque, 2, dequeMainChain, dequePendChain);
 
     // * get time by microseconds after sorting by deque
     endTime = getTimeByUs();
@@ -572,17 +527,17 @@ void mergeInsertionSort(int ac, char **av){
         << deque.size() << " elements with std::[deque] : "
         << endTime - startTime << "µs" << std::endl;
 
-    // * check numbers of vector if sorted
-    if (std::is_sorted(vector.begin(), vector.end())){
-        std::cout << "Vector is Sorted\n";
-    } else {
-        std::cout << "Vector is Not sorted\n";
-    }
+    // // * check numbers of vector if sorted
+    // if (std::is_sorted(vector.begin(), vector.end())){
+    //     std::cout << "Vector is Sorted\n";
+    // } else {
+    //     std::cout << "Vector is Not sorted\n";
+    // }
 
-    // * check numbers of deque if sorted
-    if (std::is_sorted(deque.begin(), deque.end())){
-        std::cout << "Deque is Sorted\n";
-    } else {
-        std::cout << "Deque is Not sorted\n";
-    }
+    // // * check numbers of deque if sorted
+    // if (std::is_sorted(deque.begin(), deque.end())){
+    //     std::cout << "Deque is Sorted\n";
+    // } else {
+    //     std::cout << "Deque is Not sorted\n";
+    // }
 }

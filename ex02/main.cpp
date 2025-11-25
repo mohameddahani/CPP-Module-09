@@ -13,9 +13,7 @@
 #include "PmergeMe.hpp"
 
 int main(int ac, char **av){
-
-    // ! CHECK MAX 3000 NUMBERS
-    if (ac == 1){
+    if (ac <= 2){
         std::cerr << "Error: You should add numbers" << std::endl;
         return 1;
     }
