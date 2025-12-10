@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/19 20:49:40 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/12/10 17:28:54 by kali             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,12 @@ static void divisionIntoPairsAndSorting(TContainer &container, int sizeOfPairs,
                 std::swap_ranges(startOfBlock, endOfBlock, startOfSecondBlock);
             }
         }
-
-        //  std::cout << "size of pairs befor recursion: " << sizeOfPairs << std::endl;
         
         // * condition of call recusion that's mean when we division into pairs and we has more than 1 pair then we need to do recursion
         if (container.size() / sizeOfPairs >= 2){
             // * recall the function
             divisionIntoPairsAndSorting(container, sizeOfPairs * 2, mainChain, pendChain);
         }
-
-        // std::cout << "size of pairs after recursion: " << sizeOfPairs << std::endl;
     
         // ? LOGIC OF INSERTION
 
@@ -503,7 +499,7 @@ void mergeInsertionSort(int ac, char **av){
         << endTime - startTime << "µs" << std::endl;
 
     // * print the number of Comparisons
-    // std::cout << "Comparisons: " << comparisons << std::endl;
+    std::cout << "Comparisons: " << comparisons << std::endl;
 
     // ! DEQUE
 
