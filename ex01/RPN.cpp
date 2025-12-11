@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RPN.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 08:53:47 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/11 18:13:58 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/12/11 14:37:58 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,10 @@ void rpnParsing(std::string rpn){
         throw std::runtime_error("Error: you have more than 1 number in stack");
     }
     
-    std::cout << "Result: " << stack.top() << std::endl;
+    // * check if stack has no numbers
+    if (stack.empty()){
+        throw std::runtime_error("Error: statck is empty");
+    } else {
+        std::cout << "Result: " << stack.top() << std::endl;
+    }
 }
