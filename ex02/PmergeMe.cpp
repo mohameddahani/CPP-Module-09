@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kali <kali@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/12/10 17:28:54 by kali             ###   ########.fr       */
+/*   Updated: 2025/12/13 21:53:03 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,51 +289,51 @@ static void divisionIntoPairsAndSorting(TContainer &container, int sizeOfPairs,
             }
 
         } else {
-            // * check if there no jacobsthal numbers but we still have an pairs in pend chain
-            // * then we need to push all pairs by revers like from end to start
-            for (int count = pendChain.size() - 1; count >= 0; count--){
-                // * get the larger number of pair to do binary search
-                long largeElemenOfPair = pendChain[count].second.back();
+                // * check if there no jacobsthal numbers but we still have an pairs in pend chain
+                // * then we need to push all pairs by revers like from end to start
+                for (int count = pendChain.size() - 1; count >= 0; count--){
+                    // * get the larger number of pair to do binary search
+                    long largeElemenOfPair = pendChain[count].second.back();
 
-                // * get key of pair to search the the bound of him
-                std::string key = pendChain[count].first;
+                    // * get key of pair to search the the bound of him
+                    std::string key = pendChain[count].first;
 
-                // * change the first character from b to a (like from b7 to a7)
-                key[0] = 'a';
+                    // * change the first character from b to a (like from b7 to a7)
+                    key[0] = 'a';
 
-                // * get end of range that we need to search in it
-                int endOfRange = -1;
-                for (size_t k = 0; k < mainChain.size(); k++){
-                    if (mainChain[k].first == key){
-                        endOfRange = k;
-                        break;
+                    // * get end of range that we need to search in it
+                    int endOfRange = -1;
+                    for (size_t k = 0; k < mainChain.size(); k++){
+                        if (mainChain[k].first == key){
+                            endOfRange = k;
+                            break;
+                        }
+                        
                     }
-                    
+        
+                    // * clear key
+                    key.clear();
+
+                    // * push the element of pair to main chain using lower bound
+                    typename TChain::iterator itLowerBound;
+
+                    // * create object of compFunc sturct
+                    compFunc<typename TChain::value_type> cmp;
+        
+                    // * check range
+                    if (endOfRange == -1){
+                        itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, cmp);
+                    } else {
+                        itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, cmp);
+                    }
+
+                    // * insert pair from pend to main chain
+                    mainChain.insert(itLowerBound, pendChain[count]);
+                    // * remove him from pend
+                    pendChain.erase(pendChain.begin() + count);
                 }
-    
-                // * clear key
-                key.clear();
-
-                // * push the element of pair to main chain using lower bound
-                typename TChain::iterator itLowerBound;
-
-                // * create object of compFunc sturct
-                compFunc<typename TChain::value_type> cmp;
-    
-                // * check range
-                if (endOfRange == -1){
-                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.end(), largeElemenOfPair, cmp);
-                } else {
-                    itLowerBound = std::lower_bound(mainChain.begin(), mainChain.begin() + endOfRange, largeElemenOfPair, cmp);
-                }
-
-                // * insert pair from pend to main chain
-                mainChain.insert(itLowerBound, pendChain[count]);
-                // * remove him from pend
-                pendChain.erase(pendChain.begin() + count);
-            }
             
-        }
+            }
 
         // * get rest element of container that not belong to any pair
         // * create a container to store the rest element
