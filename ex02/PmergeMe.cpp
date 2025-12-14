@@ -6,7 +6,7 @@
 /*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/12/14 15:31:59 by mohamed-dah      ###   ########.fr       */
+/*   Updated: 2025/12/14 16:10:49 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static bool getJacobsthalNumber(TChain &pendChain,
     // * clear the old data from jacobsthalNumberContainer befor add the new numbers
     jacobsthalNumberContainer.clear();
 
-    // * get the get Jacobsthal Number
+    // * get the Jacobsthal Number
     for (size_t i = 0; i < pendChain.size(); i++){
         // * we add 1 to skip letter b
         double numOfChainWithoutBLetter = std::strtod(pendChain[i].first.c_str() + 1, NULL);
@@ -117,14 +117,14 @@ static void divisionIntoPairsAndSorting(TContainer &container, int sizeOfPairs,
 
         // * store element to main and pend chain
         unsigned int orderOfPairs = 0;
-        // * is length numbers of one single pair
-        unsigned int lengthOfOnePair = sizeOfPairs / 2;
-        for (int i = 0; i + lengthOfOnePair <= container.size(); i += lengthOfOnePair){
+        // * the length numbers of half pair
+        unsigned int lengthOfHalfPair = sizeOfPairs / 2;
+        for (int i = 0; i + lengthOfHalfPair <= container.size(); i += lengthOfHalfPair){
             // * clear the container
             containerOfPair.clear();
 
             // * push all size of pair numbers to container of pair
-            for (size_t j = i; j < lengthOfOnePair + i; j++){
+            for (size_t j = i; j < lengthOfHalfPair + i; j++){
                 containerOfPair.push_back(container[j]);
             }
 
@@ -338,8 +338,8 @@ static void divisionIntoPairsAndSorting(TContainer &container, int sizeOfPairs,
         // * get rest element of container that not belong to any pair
         // * create a container to store the rest element
         TContainer theRestOfContainer;
-        if (mainChain.size() * lengthOfOnePair < container.size()){
-            int theRest = container.size() - mainChain.size() * lengthOfOnePair;
+        if (mainChain.size() * lengthOfHalfPair < container.size()){
+            int theRest = container.size() - mainChain.size() * lengthOfHalfPair;
             for (int i = container.size() - 1; theRest > 0; i--){
                 theRestOfContainer.insert(theRestOfContainer.begin(), container[i]);
                 theRest--;
@@ -482,7 +482,6 @@ void mergeInsertionSort(int ac, char **av){
 
     std::cout << std::endl;
 
-    // todo: the division into the pairs & sorting
     // ! VECTOR
 
     // * Main chain vector
