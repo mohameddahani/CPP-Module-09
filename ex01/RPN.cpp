@@ -6,7 +6,7 @@
 /*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 08:53:47 by mdahani           #+#    #+#             */
-/*   Updated: 2025/12/11 14:37:58 by mohamed-dah      ###   ########.fr       */
+/*   Updated: 2025/12/14 11:52:18 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,11 @@ void rpnParsing(std::string rpn){
 
         // * Store the numbers and if we found opearator we do the calculation
         if (std::isdigit(rpn[i])){
+            // * check if next char is not number because we need handle only (0-9)
+            if (std::isdigit(rpn[i + 1])){
+                throw std::runtime_error("Error: range of numbers must be from 0 to 9");
+            }
+            
             // * push it to stack as int
             stack.push(rpn[i] - '0');
         }
