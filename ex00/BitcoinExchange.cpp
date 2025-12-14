@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdahani <mdahani@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/08 14:56:58 by mdahani           #+#    #+#             */
-/*   Updated: 2025/11/11 08:23:03 by mdahani          ###   ########.fr       */
+/*   Updated: 2025/12/14 14:41:34 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,11 @@ void parseFile(std::string fileName, std::map<std::string, std::string>&map){
                     minusSign++;
                 }
                 if (line[i] == '|'){
+                    // * check if date befor pipe
+                    if (i != 11){
+                        pipe++;
+                    }
+
                     pipe++;
                 }
                 if (line[i] == ' '){
