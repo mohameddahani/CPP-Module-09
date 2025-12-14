@@ -6,7 +6,7 @@
 /*   By: mohamed-dahani <mohamed-dahani@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 08:24:34 by mdahani           #+#    #+#             */
-/*   Updated: 2025/12/13 21:53:03 by mohamed-dah      ###   ########.fr       */
+/*   Updated: 2025/12/14 15:31:59 by mohamed-dah      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,6 +384,18 @@ static double getTimeByUs(){
     return (time.tv_sec * 1e6) + (time.tv_nsec / 1e3);
 }
 
+// * check if we have a duplicate number
+static bool checkIfHasDuplicateNumber(std::vector<long>&vector){
+    for (size_t i = 0; i < vector.size(); i++){
+        for (size_t j = i + 1; j < vector.size(); j++){
+            if (vector[i] == vector[j]){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void mergeInsertionSort(int ac, char **av){
     // ? PARSING
 
@@ -449,6 +461,12 @@ void mergeInsertionSort(int ac, char **av){
         vector.push_back(number);
         deque.push_back(number);
     }
+
+    // * check if we have a duplicate number
+    if (checkIfHasDuplicateNumber(vector)){
+        throw std::runtime_error("Error: Has duplicate number");
+    }
+    
 
 
     // ? FORD JOHNSON ALGORITHM (MERGE-INSERTION SORT)
